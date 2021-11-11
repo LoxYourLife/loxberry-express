@@ -1,0 +1,27 @@
+{
+  "name": "loxberry-express-bin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "PM2_HOME=$(pwd)/.pm2 pm2 start express.config.js",
+    "stop": "PM2_HOME=$(pwd)/.pm2 pm2 stop express.config.js",
+    "restart": "PM2_HOME=$(pwd)/.pm2 pm2 restart express.config.js",
+    "manager:start": "PM2_HOME=$(pwd)/.pm2 pm2 start express-manager.config.js",
+    "manager:stop": "PM2_HOME=$(pwd)/.pm2 pm2 stop express-manager.config.js",
+    "manager:restart": "PM2_HOME=$(pwd)/.pm2 pm2 restart express-manager.config.js",
+    "delete": "PM2_HOME=$(pwd)/.pm2 pm2 delete express.config.js && pm2 delete express-manager.config.js"
+  },
+  "dependencies": {
+    "body-parser": "1.19.0",
+    "express": "4.17.1",
+    "express-fileupload": "1.2.1",
+    "ws": "8.2.3",
+    "pm2": "5.1.2"
+  },
+  "author": "Ronald Marske",
+  "license": "ISC"
+}

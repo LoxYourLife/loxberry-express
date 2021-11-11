@@ -1,0 +1,23 @@
+#!/bin/sh
+
+ARGV0=$0 # Zero argument is shell command
+ARGV1=$1 # First argument is temp folder during install
+ARGV2=$2 # Second argument is Plugin-Name for scipts etc.
+ARGV3=$3 # Third argument is Plugin installation folder
+ARGV4=$4 # Forth argument is Plugin version
+ARGV5=$5 # Fifth argument is Base folder of LoxBerry
+
+echo "<INFO> Stopping Service"
+npm --prefix $ARGV5/bin/plugins/$ARGV3 run stop
+npm --prefix $ARGV5/bin/plugins/$ARGV3 run manager:stop
+npm --prefix $ARGV5/bin/plugins/$ARGV3 run delete
+
+# Enable proxy mode for apache2
+echo "<INFO> disabling proxy for apache"
+rm $ARGV5/system/apache2/mods-enabled/proxy.load
+rm $ARGV5/system/apache2/mods-enabled/proxy_http.load
+
+echo "<INFO> reloading apache"
+sudo systemctl reload apache2
+
+exit 0;

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+PLUGINNAME=REPLACELBPPLUGINDIR
+PATH="/sbin:/bin:/usr/sbin:/usr/bin:$LBHOMEDIR/bin:$LBHOMEDIR/sbin"
+
+ENVIRONMENT=$(cat /etc/environment)
+export $ENVIRONMENT
+
+su loxberry -c "npm --prefix $LBHOMEDIR/bin/plugins/${PLUGINNAME} run start"
+su loxberry -c "npm --prefix $LBHOMEDIR/bin/plugins/${PLUGINNAME} run manager:start"
+exit 0

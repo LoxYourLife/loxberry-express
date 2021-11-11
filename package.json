@@ -1,0 +1,33 @@
+{
+  "name": "loxberry-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": "github:LoxYourLife/unifi-presence.git",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "lint": "eslint bin",
+    "prettify": "prettier --write bin"
+  },
+  "author": "Ronald Marske",
+  "license": "ISC",
+  "config": {
+    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,scripts,tests,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
+    "prettier": "--ignore-path .gitignore --loglevel=warn \"{src,scripts,tests,.github}/**/*.{js,md,yml,json,html}\" \"*.{js,yml,json,html}\" \".*.{js,yml,json,html}\" \"!package-lock.json\""
+  },
+  "devDependencies": {
+    "@quasar/extras": "^1.11.3",
+    "@quasar/vite-plugin": "^1.0.1",
+    "@vitejs/plugin-vue": "^1.9.3",
+    "eslint": "7.32.0",
+    "prettier": "2.4.0",
+    "quasar": "^2.2.2",
+    "sass": "1.43.4",
+    "vite": "^2.6.4",
+    "vue": "3.2.16",
+    "vue-router": "4.0.12",
+    "lodash": "4.17.21"
+  }
+}

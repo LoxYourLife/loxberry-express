@@ -1,0 +1,9 @@
+
+node_modules
+loxberry
+
+data/unifi.*
+.pm2
+!logs/.gitkeep
+**/logs/*
+dist
