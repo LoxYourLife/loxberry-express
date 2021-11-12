@@ -53,7 +53,7 @@ module.exports = ({router}) => {
 
 Everything you can do on router level in express you can also do in your plugin.
 
-[express.js of this plugin](./blob/master/webfrontend/htmlauth/express.js)
+[express.js of this plugin](webfrontend/htmlauth/express.js)
 
 ### Rewrite Rules for Apache to use Express
 
