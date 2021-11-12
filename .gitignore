@@ -7,3 +7,4 @@ data/unifi.*
 !logs/.gitkeep
 **/logs/*
 dist
+plugins

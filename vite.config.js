@@ -4,8 +4,12 @@ import path from 'path';
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin';
 
 module.exports = defineConfig({
+  base: '',
   plugins: [vue(), quasar({ sassVariables: 'app/quasar.extras.sass' })],
   build: {
+    outDir: 'webfrontend/htmlauth/views',
+    assetsDir: 'assets',
+    emptyOutDir: false,
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html')

@@ -1,2 +1,3 @@
 RewriteEngine On
-RewriteRule ^/node/(.*) http://localhost:3000/plugins/express/$1 [P,L]
+RewriteRule ^index.cgi http://localhost:3000/plugins/express [P,L]
+RewriteRule ^(.*) http://localhost:3000/plugins/express/$1 [P,L]

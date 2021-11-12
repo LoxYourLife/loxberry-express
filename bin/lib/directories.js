@@ -1,5 +1,5 @@
 const path = require('path');
-const PRODUCTION = '/opt/loxberry' === process.env.HOME;
+const PRODUCTION = process.env.NODE_ENV === 'production';
 
 const directories = () => {
   if (PRODUCTION) {
@@ -15,7 +15,7 @@ const directories = () => {
     homedir: path.join(__dirname, '../../loxberry'),
     logdir: path.join(__dirname, '../../logs'),
     bindir: path.join(__dirname, '../'),
-    plugindir: path.join(__dirname, '../../plugin')
+    pluginDir: path.join(__dirname, '../../plugins')
   };
 };
 

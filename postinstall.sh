@@ -39,4 +39,11 @@ ln -s ../mods-available/proxy_http.load $ARGV5/system/apache2/mods-enabled/proxy
 echo "<INFO> reloading apache"
 sudo systemctl reload apache2
 
+echo "<INFO> copy .htaccess"
+cp webfrontend/htmlauth/.htaccess $ARGV5/webfrontend/htmlauth/plugins/$ARGV3/.htaccess
+
+echo "<INFO> starting services"
+npm --prefix $ARGV5/bin/plugins/$ARGV3 run start
+npm --prefix $ARGV5/bin/plugins/$ARGV3 run manager:start
+
 exit 0;

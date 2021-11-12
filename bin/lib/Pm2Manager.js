@@ -5,6 +5,7 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { spawn } = require('child_process');
 const directories = require('./directories');
+const logger = require('./Logger')('ExpressManager');
 
 const memory = (bytes) => {
   var sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -27,6 +28,36 @@ const uptime = (data) => {
   if (minutes > 0) return `${minutes}m`;
   return `${seconds}s`;
 };
+
+const logFormat = (filteredLogs) =>
+  _.reduce(
+    filteredLogs,
+    (logs, message) => {
+      if (message.startsWith('[')) {
+        const regex = /^\[([^\]]+)\] ([^|]+)\|([a-z]+): (.*)$/i;
+        const matches = message.match(regex);
+        const json = { date: matches[1], plugin: matches[2], level: matches[3], message: matches[4], error: null };
+        logs.push(json);
+      } else if (message.startsWith('    ')) {
+        const index = logs.length - 1;
+        if (logs[index].error === null) {
+          logs[index].error = '';
+        }
+        logs[index].error += `>    ${message}\n`;
+      } else {
+        logs.push({
+          date: 'unknown',
+          level: 'ERROR',
+          message,
+          plugin: 'unknown',
+          error: null
+        });
+      }
+
+      return logs;
+    },
+    []
+  );
 
 module.exports = class Pm2Manager {
   constructor(clients) {
@@ -62,8 +93,8 @@ module.exports = class Pm2Manager {
       const telemetry = data.find((service) => service.name === expressConfig[0].name);
       this.cachedTelemetry = {
         telemetry: {
-          name: telemetry.name,
-          pid: telemetry.pid,
+          name: _.get(telemetry, 'name'),
+          pid: _.get(telemetry, 'pid'),
           status: _.get(telemetry, 'pm2_env.status', 'unknown'),
           version: _.get(telemetry, 'pm2_env.version', 'unknown'),
           memory: memory(_.get(telemetry, 'monit.memory', 0)),
@@ -101,11 +132,11 @@ module.exports = class Pm2Manager {
   async readLogs() {
     this.logReader = await spawn('tail', ['-n', '200', '-f', expressConfig[0].out_file]);
     this.logReader.stdout.on('data', (data) => {
-      const logs = data
+      const filteredLogs = data
         .toString()
         .split('\n')
-        .filter((entry) => !_.isEmpty(entry))
-        .map((message) => ({ date: new Date(), message }));
+        .filter((entry) => !_.isEmpty(entry));
+      const logs = logFormat(filteredLogs);
       if (!_.isEmpty(logs)) this.broadcast({ logs });
     });
 
@@ -117,11 +148,11 @@ module.exports = class Pm2Manager {
   async readErrorLogs() {
     this.errorLogReader = await spawn('tail', ['-n', '200', '-f', expressConfig[0].error_file]);
     this.errorLogReader.stdout.on('data', (data) => {
-      const errorLogs = data
+      const filteredLogs = data
         .toString()
         .split('\n')
-        .filter((entry) => !_.isEmpty(entry))
-        .map((message) => ({ date: new Date(), message }));
+        .filter((entry) => !_.isEmpty(entry));
+      const errorLogs = logFormat(filteredLogs);
       if (!_.isEmpty(errorLogs)) this.broadcast({ errorLogs });
     });
 
@@ -133,12 +164,15 @@ module.exports = class Pm2Manager {
   async handleCommand(command) {
     switch (command) {
       case 'start':
+        logger.info('Starting Express Server');
         await exec('npm run start', { cwd: directories.bindir });
         break;
       case 'stop':
+        logger.info('Stopping Express Server');
         await exec('npm run stop', { cwd: directories.bindir });
         break;
       case 'restart':
+        logger.info('Restarting Express Server');
         await exec('npm run restart', { cwd: directories.bindir });
         break;
     }

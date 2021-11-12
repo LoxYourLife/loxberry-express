@@ -1,120 +1,119 @@
 <template>
-  <q-page padding>
-    <div class="row">
-      <div class="col-6 text-h4 self-end">Express Telemetry</div>
-      <div class="col-6 text-right q-gutter-sm">
-        <q-spinner v-if="btnDisabled" color="primary" size="2em" :thickness="10" />
-        <q-btn :disabled="btnDisabled" icon="restart_alt" size="md" color="orange-6" label="Restart Server" @click="restart" />
-        <q-btn :disabled="btnDisabled" v-if="isOnline" icon="stop" size="md" color="red-6" label="Stop Server" @click="stop" />
-        <q-btn :disabled="btnDisabled" v-else icon="play_arrow" size="md" color="light-green-6" label="Start Server" @click="start" />
-      </div>
+
+  <div class="row">
+    <div class="col-6 text-h4 self-end">Express Telemetry</div>
+    <div class="col-6 text-right q-gutter-sm">
+      <q-spinner v-if="btnDisabled" color="primary" size="2em" :thickness="10" />
+      <q-btn :disabled="btnDisabled" icon="restart_alt" size="md" color="orange-6" label="Restart Server" @click="restart" />
+      <q-btn :disabled="btnDisabled" v-if="isOnline" icon="stop" size="md" color="red-6" label="Stop Server" @click="stop" />
+      <q-btn :disabled="btnDisabled" v-else icon="play_arrow" size="md" color="light-green-6" label="Start Server" @click="start" />
     </div>
-    <q-separator spaced />
+  </div>
+  <q-separator spaced />
 
-    <div class="full-width row  justify-start items-stretch content-stretch">
-      <div class="q-px-sm col-md-2 col-sm-4 q-pb-md flex items-stretch content-stretch">
-        <q-card class="flex full-width content-center" :class="{'bg-light-green-6': isOnline, 'bg-red': !isOnline}">
-          <q-card-section class="text-white col-12">
-            <template v-if="isOnline">
-              <div class="text-h4">Online</div>
-              <div class="">PID {{telemetry.pid}}</div>
-            </template>
-            <div class="text-h4" v-else>{{telemetry.status}}</div>
-          </q-card-section>
-        </q-card>
-      </div>
-      <div class="col-md-2 col-sm-4 q-px-sm q-pb-md flex items-stretch content-stretch">
-        <q-card class="full-width flex justify-center">
-          <q-card-section class="row justify-center">
-            <div class="text-h5">CPU Usage</div>
-            <q-knob :min="0" :max="100" v-model="telemetry.cpu" show-value size="80px" :thickness="0.22" color="lime" track-color="grey-2" class="text-lime text-bold q-ma-md">{{telemetry.cpu}}%</q-knob>
-          </q-card-section>
-        </q-card>
-      </div>
-      <div class="col-md-2 col-sm-4 q-px-sm q-pb-md flex items-stretch content-stretch">
-        <q-card class="full-width flex justify-center">
-          <q-card-section class="flex justify-center">
-            <div class="text-h5">Memory</div>
-            <q-knob :min="0" :max="100" v-model="telemetry.memory.value" show-value size="80px" :thickness="0.22" color="lime" track-color="grey-2" class="text-lime text-bold q-ma-md">{{telemetry.memory.value}} {{telemetry.memory.unit}}</q-knob>
-          </q-card-section>
-        </q-card>
-      </div>
-      <div class="col-md-6 col-sm-12 q-px-sm q-pb-md flex items-stretch content-stretch">
-        <q-card class="full-width">
-          <q-card-section horizontal class="flex items-center">
-            <q-card-section class="">
-              <div class="text-h6 q-px-md">Metadata</div>
-              <q-list dense>
-                <q-item v-for="item in metadata" :key="item.name">
-                  <q-item-section avatar>
-                    <q-item-label>{{item.name}}</q-item-label>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>{{item.telemetry}}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-card-section>
-
-            <q-separator vertical />
-
-            <q-card-section class="">
-              <div class="text-h6 q-px-md">Heap</div>
-              <q-list dense>
-                <q-item v-for="item in heap" :key="item.name">
-                  <q-item-section avatar>
-                    <q-item-label>{{item.name}}</q-item-label>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>{{item.telemetry}}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-card-section>
-
-            <q-separator vertical />
-
-            <q-card-section class="">
-              <div class="text-h6 q-px-md">Requests</div>
-              <q-list dense>
-                <q-item v-for="item in requests" :key="item.name">
-                  <q-item-section avatar>
-                    <q-item-label>{{item.name}}</q-item-label>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label caption>{{item.telemetry}}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
+  <div class="full-width row  justify-start items-stretch content-stretch">
+    <div class="q-px-sm col-md-2 col-sm-4 q-pb-md flex items-stretch content-stretch">
+      <q-card class="flex full-width content-center" :class="{'bg-light-green-6': isOnline, 'bg-red': !isOnline}">
+        <q-card-section class="text-white col-12">
+          <template v-if="isOnline">
+            <div class="text-h4">Online</div>
+            <div class="">PID {{telemetry.pid}}</div>
+          </template>
+          <div class="text-h4" v-else>{{telemetry.status}}</div>
+        </q-card-section>
+      </q-card>
     </div>
+    <div class="col-md-2 col-sm-4 q-px-sm q-pb-md flex items-stretch content-stretch">
+      <q-card class="full-width flex justify-center">
+        <q-card-section class="row justify-center">
+          <div class="text-h5">CPU Usage</div>
+          <q-knob readonly :min="0" :max="100" v-model="telemetry.cpu" show-value size="80px" :thickness="0.22" color="lime" track-color="grey-2" class="text-lime text-bold q-ma-md">{{telemetry.cpu}}%</q-knob>
+        </q-card-section>
+      </q-card>
+    </div>
+    <div class="col-md-2 col-sm-4 q-px-sm q-pb-md flex items-stretch content-stretch">
+      <q-card class="full-width flex justify-center">
+        <q-card-section class="flex justify-center">
+          <div class="text-h5">Memory</div>
+          <q-knob readonly :min="0" :max="100" v-model="telemetry.memory.value" show-value size="80px" :thickness="0.22" color="lime" track-color="grey-2" class="text-lime text-bold q-ma-md">{{telemetry.memory.value}} {{telemetry.memory.unit}}</q-knob>
+        </q-card-section>
+      </q-card>
+    </div>
+    <div class="col-md-6 col-sm-12 q-px-sm q-pb-md flex items-stretch content-stretch">
+      <q-card class="full-width">
+        <q-card-section horizontal class="flex items-center">
+          <q-card-section class="">
+            <div class="text-h6 q-px-md">Metadata</div>
+            <q-list dense>
+              <q-item v-for="item in metadata" :key="item.name">
+                <q-item-section avatar>
+                  <q-item-label>{{item.name}}</q-item-label>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label caption>{{item.telemetry}}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
 
-    <q-card class="q-mx-sm">
-      <q-tabs v-model="tab" dense class="bg-grey-2" active-color="primary" indicator-color="primary" align="justify" narrow-indicator>
-        <q-toggle v-model="autoScroll" label="Auto scroll" />
-        <q-tab name="log" label="Logs" />
-        <q-tab name="error" label="Error Log" />
-      </q-tabs>
+          <q-separator vertical />
 
-      <q-separator />
+          <q-card-section class="">
+            <div class="text-h6 q-px-md">Heap</div>
+            <q-list dense>
+              <q-item v-for="item in heap" :key="item.name">
+                <q-item-section avatar>
+                  <q-item-label>{{item.name}}</q-item-label>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label caption>{{item.telemetry}}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
 
-      <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="log" class="log">
-          <Log :autoScroll="autoScroll" :logs="logs" @disableAutoScroll="disableAutoScroll" />
-        </q-tab-panel>
-      </q-tab-panels>
+          <q-separator vertical />
 
-      <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="error" class="log">
-          <Log :autoScroll="autoScroll" :logs="errorLogs" @disableAutoScroll="disableAutoScroll" />
-        </q-tab-panel>
-      </q-tab-panels>
-    </q-card>
+          <q-card-section class="">
+            <div class="text-h6 q-px-md">Requests</div>
+            <q-list dense>
+              <q-item v-for="item in requests" :key="item.name">
+                <q-item-section avatar>
+                  <q-item-label>{{item.name}}</q-item-label>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label caption>{{item.telemetry}}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+        </q-card-section>
+      </q-card>
+    </div>
+  </div>
 
-  </q-page>
+  <q-card class="q-mx-sm">
+    <q-tabs v-model="tab" dense class="bg-grey-2" active-color="primary" indicator-color="primary" align="justify" narrow-indicator>
+      <q-toggle v-model="autoScroll" label="Auto scroll" />
+      <q-tab name="log" label="Logs" />
+      <q-tab name="error" label="Error Log" />
+    </q-tabs>
+
+    <q-separator />
+
+    <q-tab-panels v-model="tab" animated>
+      <q-tab-panel name="log" class="log">
+        <Log :autoScroll="autoScroll" :logs="logs" @disableAutoScroll="disableAutoScroll" />
+      </q-tab-panel>
+    </q-tab-panels>
+
+    <q-tab-panels v-model="tab" animated>
+      <q-tab-panel name="error" class="log">
+        <Log :autoScroll="autoScroll" :logs="errorLogs" @disableAutoScroll="disableAutoScroll" />
+      </q-tab-panel>
+    </q-tab-panels>
+  </q-card>
+
 </template>
 <style lang="scss" scoped>
 .log {
@@ -184,7 +183,8 @@ export default {
       webSocket.close();
     });
     const loadTelemetry = async () => {
-      webSocket = new WebSocket('ws://localhost:3001');
+      const [host] = window.location.host.split(':');
+      webSocket = new WebSocket(`ws://${host}:3001`);
       webSocket.onmessage = async (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -198,17 +198,9 @@ export default {
             }
             telemetry.value = data.telemetry;
           } else if (data.logs) {
-            const logEntries = data.logs.map((log) => {
-              log.date = new Date(log.date);
-              return log;
-            });
-            logs.value.push(...logEntries);
+            logs.value.push(...data.logs);
           } else if (data.errorLogs) {
-            const logEntries = data.errorLogs.map((log) => {
-              log.date = new Date(log.date);
-              return log;
-            });
-            errorLogs.value.push(...logEntries);
+            errorLogs.value.push(...data.errorLogs);
           }
         } catch {}
       };

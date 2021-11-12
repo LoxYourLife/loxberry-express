@@ -1,6 +1,9 @@
+process.env.NODE_ENV === ('/opt/loxberry' === process.env.HOME) ? 'production' : 'development';
+
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
+const logger = require('./lib/Logger')('ExpressManager');
 const Pm2Manager = require('./lib/Pm2Manager');
 
 const app = express();
@@ -20,17 +23,18 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('message', (message) => {
+    logger.debug(`received Message: ${message}`);
     try {
       const data = JSON.parse(message);
       if (data.command) {
         pm2Manager.handleCommand(data.command);
       }
     } catch (e) {
-      console.error('recevied something else than json', e);
+      logger.error('recevied something else than json', e);
     }
   });
 });
 
 server.listen(process.env.PORT || 3001, () => {
-  console.log(`Express Manager on port ${server.address().port} :)`);
+  logger.info(`Express Manager on port ${server.address().port} :)`);
 });

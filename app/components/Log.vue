@@ -1,10 +1,14 @@
 <template>
 
   <div class="monospaced bg-grey-3">
-    <q-virtual-scroll ref="logRef" style="max-height: 550px;" component="q-list" :items="logs" separator @virtual-scroll="onVirtualScroll">
+    <q-virtual-scroll ref="logRef" style="max-height: 420px;" component="q-list" :items="logs" separator @virtual-scroll="onVirtualScroll">
       <template v-slot="{ item, index }">
-        <q-item :key="index" dense v-ripple>
-          {{item.date.toLocaleDateString()}} {{item.date.toLocaleTimeString()}} {{item.message}}
+        <q-item :key="index" dense :class="textColor(item.level)">
+          <q-icon :name="icon(item.level)" size="sm" class="q-mr-xs" />
+          <q-badge align="middle" outline :label="item.date" color="grey-8" class="q-mr-xs" />
+          <q-badge align="middle" outline :label="item.plugin" color="grey-8" class="q-mr-xs" />
+          <span class="text-weight-thin">{{item.plugin}}:</span>
+          <span>{{item.message}}<span v-if="item.error" class="pre-line">{{`\n${item.error.replaceAll('>', '&nbsp;&nbsp;')}`}}</span></span>
         </q-item>
       </template>
     </q-virtual-scroll>
@@ -14,6 +18,12 @@
 .monospaced {
   font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono',
     'Bitstream Vera Sans Mono', 'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier, monospace;
+}
+.q-badge {
+  max-height: 20px;
+}
+.pre-line {
+  white-space: pre-line;
 }
 </style>
 <script>
@@ -46,6 +56,19 @@ export default {
     );
     onBeforeMount(updateScroll);
 
+    const textColor = (logLevel) => {
+      if (logLevel === 'INFO') return 'text-primary';
+      if (logLevel === 'ERROR') return 'text-negative';
+      if (logLevel === 'WARN') return 'text-warning';
+      if (logLevel === 'DEBUG') return 'grey-8';
+    };
+
+    const icon = (logLevel) => {
+      if (logLevel === 'INFO') return 'info';
+      if (logLevel === 'ERROR') return 'error';
+      if (logLevel === 'WARN') return 'warning';
+      if (logLevel === 'DEBUG') return 'bug_report';
+    };
     const onVirtualScroll = ({ index }) => {
       if (props.autoScroll === true && index < scrollIndex.value) {
         emit('disableAutoScroll');
@@ -57,7 +80,9 @@ export default {
       logRef,
       scrollIndex,
       updateScroll,
-      onVirtualScroll
+      onVirtualScroll,
+      textColor,
+      icon
     };
   }
 };
