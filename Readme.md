@@ -6,8 +6,32 @@ Normally plugins can be written using Pearl or PHP. NodeJs was possible even bef
 **Attention**
 > The functionality comes a a pluin to the loxberry. If you want to rely on this in your plugin, you need to check if the express plugin is installed on the target loxberry system. In case it's not installed, the installation routine should be stopped with a message to the user that the express plugin is required.
 
-To do such check i'd recomment using the [preroot] file. There you can than easily check thre existence with the following commands.
+To do such check i'd recomment using the [preroot] file. There you can than easily check the existence with one of the following sequences.
 ```
+#!/bin/bash
+EXPRESS=$(perl -e 'use LoxBerry::System;print !LoxBerry::System::plugindata("express") ? 1 : 0;exit;')
+if [ $EXPRESS = "1" ]
+then
+  echo "<ERROR> the plugin youre trying to install requires the Express plugin. Please install this first."
+  exit 1;
+fi
+
+#Check if the plugin exists and if the version is >= 0.0.1**
+REQUIRED_VERSION="0.0.1"
+EXPRESS=$(perl -e "use LoxBerry::System;print !LoxBerry::System::plugindata("express") ? 1 : LoxBerry::System::pluginversion('express') ge '$REQUIRED_VERSION' ? 0 : 2;exit;")
+if [ $EXPRESS = "1" ]
+then
+  echo "<ERROR> the plugin youre trying to install requires the Express plugin. Please install this first."
+  exit 1;
+elif [ $EXPRESS = "2" ]
+then
+  echo "<ERROR> the plugin youre trying to install requires the Express plugin with a version >= $REQUIRED_VERSION Please upgrade the Express plugin."
+exit 1;
+fi
+```
+
+Within your `preroot.sh` you need to check the existence of the plugin using the `express.cgi` file
+
 DIR="$LBHOME/bin/plugins/express"
 if [! -d "$DIR" ]; then
   echo "<ERROR> This plugin relys on the Express Plugin. Please ensure this is installed"
