@@ -38,6 +38,11 @@ if [! -d "$DIR" ]; then
   exit 1
 fi
 
+## Installation
+
+Currently there is not a relase yet and the documentation in the loxwiki is still missing. Never the less can the plugin be installed using the following url:
+https://github.com/LoxYourLife/loxberry-express/archive/refs/heads/master.zip
+
 
 ## How does it work
 
