@@ -47,10 +47,13 @@ The Express Server runs at port 3000 and allows your plugin to hook into the url
 
 The module provides also some metrics and the possibility to `start`, `stop` and `restart` the express server. On top all the live logs are provided that you can check for errors and issues easily while developing.
 
+![Screenshot](docs/screen.jpg)
+
 The [ExpressJs] server comes with the [Handlebars] template enginge. The Loxberry layout is provided by 
 default. 
 
 Sometime you want to use Websockets, and now that's as easy as defining a route. You can even provide multiple websockets for different purposes in case you want to.
+
 
 ### Express.js handler
 
