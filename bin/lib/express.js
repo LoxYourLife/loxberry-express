@@ -6,7 +6,6 @@ const { spawn } = require('child_process');
 
 const defineRoutes = () => {
   router.get('/telemetry', async (req, res) => {
-    console.log('fetching telemetry');
     pm2.describe(expressConfig[0].name, (err, data) => {
       if (err !== null) return res.send({ error: err });
       res.send(data[0]);

@@ -1,25 +1,49 @@
 # Loxberry Express Server Plugin
 
 This plugin allows you to create loxberry plugins easily with nodeJS and [ExpressJS] as the backend server.
-Normally plugins can be written using Pearl or PHP. NodeJs was possible even before this plugin by providing everything
-yourself.
+Normally plugins can be written using Pearl or PHP. NodeJs was possible even before this plugin by providing everything yourself. Websockets can be handled as well.
+
+**Attention**
+> The functionality comes a a pluin to the loxberry. If you want to rely on this in your plugin, you need to check if the express plugin is installed on the target loxberry system. In case it's not installed, the installation routine should be stopped with a message to the user that the express plugin is required.
+
+To do such check i'd recomment using the [preroot] file. There you can than easily check thre existence with the following commands.
+```
+DIR="$LBHOME/bin/plugins/express"
+if [! -d "$DIR" ]; then
+  echo "<ERROR> This plugin relys on the Express Plugin. Please ensure this is installed"
+  exit 1
+fi
+
 
 ## How does it work
 
-The idea of the plugin is to provide an [ExpressJs] Server where you can hook into. To do that, your plugin needs an
-`epress.js` file in `webfrontend/htmlauth`. Additionally you need to let [Apache2] know, that you want to use the express
-server instead of apache. This is done using [Apache2] [mod_rewrite] and [mod_proxy] module.
+The idea of the plugin is to provide an [ExpressJs] Server where you can hook into. To do that, your plugin needs an `express.js` file in `webfrontend/htmlauth`. This file is automatically picked up by the server as soon as it's receiving a request fopr your plugin. To let Express handle your requests you need to let [Apache2] know, that you want to use the express server instead of apache. This is done using [Apache2] [mod_rewrite] and [mod_proxy] module.
 
-The module provides also some metrics for now and the possibility to `start`, `stop` and `restart` the express server.
-On top all the live logs are provided that you can check for errors and issues easily while developing.
+The Express Server runs at port 3000 and allows your plugin to hook into the url path `/plugins/:name`. The Name is the plugins defined `folder_name` from the plugin configuration file `plugin.cfg`. You can also bypass Apache2 by sending a request to `http://<loxberry ip>:3000/plugins/<plugin name>`.
 
-The [ExpressJs] server comes additionally with [Handlebars] template enginge. The default Loxberry layout is provided by 
+*Attention:*
+> Your express.js file is cached during the execution time of the server. Every server restart clears the cache und picks up the file again. Additionally every file change is noticed as well and the cache is invalidated to allow an easy install and upgrade process of your plugin without the need of restarting the express server. Let's assume you have a request counter and every request adds one up. You would write a `let requests = 0` in your file and on every request `request += 1`. This works fine until the server is restarted or the cache invalidated. The counter would then be `0` again.
+
+The module provides also some metrics and the possibility to `start`, `stop` and `restart` the express server. On top all the live logs are provided that you can check for errors and issues easily while developing.
+
+The [ExpressJs] server comes with the [Handlebars] template enginge. The Loxberry layout is provided by 
 default. 
 
-### Express.js hook
+Sometime you want to use Websockets, and now that's as easy as defining a route. You can even provide multiple websockets for different purposes in case you want to.
 
-To hook into the express server, the file needs to export a function. There is an object passed as a parameter containing
-the router and a function to render static content. The function needs to return the router to be able to work.
+### Express.js handler
+
+To hook into the express server, the file needs to export a function. There is an object passed as a parameter list. The function needs to return the router to be able to work.
+
+Parameters:
+* router: The express router to specify your routes / url pathes you want to handle
+* static: a symlink to [express.static]
+* logger: A logger class with `info`, `debug`, `warn` and `error` methods. See Logger section.
+* _: the lodash library
+
+You can decide which parameter you need by using destructing. Let's assume you just want to use the router: `module.exports = ({router}) => {...`. An example with router logger and lodash would look like this: `module.exports = ({router, logger, _}) => { ...`.
+
+
 ```
 module.exports = ({router, static}) => {
   return router;
@@ -53,6 +77,28 @@ module.exports = ({router}) => {
 
 Everything you can do on router level in express you can also do in your plugin.
 
+### Websockets
+
+The Websocket implementation is a custom one inspired by the `express-ws` library. To define a websocket handler in your express file, you can use `router.ws` instead of `router.get`. The provided arguments are:
+* the socket
+* the request
+* a next function
+
+```
+const clients = [];
+module.exports = ({router, logger}) => {
+  router.ws('/foo', (ws, request, next) => {
+    ws.on('open', () => clients.push(ws));
+    ws.on('message', (message) => {
+      logger.debug(`received message: ${message}');
+      ws.send(message.toString());
+    });
+  });
+
+  return router;
+};
+```
+
 [express.js of this plugin](webfrontend/htmlauth/express.js)
 
 ### Rewrite Rules for Apache to use Express
@@ -60,9 +106,11 @@ Everything you can do on router level in express you can also do in your plugin.
 You need to tell [Apache2] that you want to use express and your url path should be redirected to Express.
 Therefore you need to write an `.htaccess` file. The file will be placed inside `webfrontend/htmlauth` folder.
 Let's assume you write a plugin called "foobar", then the url to the plugin page would be `/admin/plugins/foobar/`. 
-By default the index.cgi file in the folder `webfrontend/htmlauth` would be used to render the page. If you want to 
-use the default `router.get('/'...)` route you need to specify a redirect rule. ''Please keep in mind that tose rules
-only work relatively from `/admin/plugin/foobar/`. Only everything after the main route can be used.
+By default the index.cgi file in the folder `webfrontend/htmlauth` would be used to render the page. If you want to use the default `router.get('/'...)` route you need to specify a redirect rule. ''Please keep in mind that tose rules only work relatively from `/admin/plugin/foobar/`. Only everything after the main route can be used.
+
+**Attention**:
+> `.htaccess` files need to be installed manually. If you follow the guidlines from the [postinstall] wiki than it's just a one liner.
+`cp webfrontend/htmlauth/.htaccess $ARGV5/webfrontend/htmlauth/plugins/$ARGV3/.htaccess`
 
 ```
 RewriteEngine On # this is required
@@ -138,9 +186,27 @@ index.hbs view.
 </html>
 ```
 
+## Logger
+
+The plugin uses a custom Logger class for a unified logfile. This logfile is than used to show the logs on the plugin page. Loggers are separated by the plugin who uses the logger. The express plugin flags all entries with "Express" whereas a plugin "my_cool_plugin" would be flaged with "My Cool Plugin".
+This works by default, you and don't need to think about this.
+
+The logfiles are stored in `LBHOME/logs/plugins/express/` and separated.
+Errors will be written into `express-errors.log` and normal logs into `express.log`.
+
+At the moment all logs are written, but there is the plan that you can condfigfure on your loxberry which logs you want to write. Fo example only `warn` and `error`. But it doesn't work yet.
+
+### Log methods
+* info(message: String)
+* debug(message: String)
+* warn(message: String)
+* error(message: String, error: Exception)
 
 [ExpressJs]: https://expressjs.com/
 [Apache2]: https://httpd.apache.org/
 [mod_rewrite]: https://httpd.apache.org/docs/2.4/mod/mod_rewrite.html
 [mod_proxy]: https://httpd.apache.org/docs/2.4/mod/mod_proxy.html
 [Handlebars]: https://handlebarsjs.com/
+[express.static]: https://expressjs.com/de/starter/static-files.html
+[postinstall]: https://www.loxwiki.eu/pages/viewpage.action?pageId=23462653#Pluginf%C3%BCrdenLoxberryentwickeln(abVersion1.x)-Rootverzeichnis-Datei:postinstall.shYellowOptional
+[preroot]: https://www.loxwiki.eu/pages/viewpage.action?pageId=23462653#Pluginf%C3%BCrdenLoxberryentwickeln(abVersion1.x)-Rootverzeichnis-Datei:preroot.shYellowOptional

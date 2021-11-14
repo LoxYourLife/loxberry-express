@@ -4,6 +4,20 @@ const fs = require('fs').promises;
 const fsConst = require('fs').constants;
 const path = require('path');
 const directories = require('./directories');
+const _ = require('lodash');
+const crypto = require('crypto');
+const fileHashes = {};
+const { addWsToRouter } = require('./webSocket');
+
+const getFileHash = async (fileName) => {
+  const file = await fs.open(fileName, 'r');
+  const content = await file.readFile();
+  await file.close();
+  const hashSum = crypto.createHash('sha256');
+  hashSum.update(content);
+
+  return hashSum.digest('hex');
+};
 
 const getModule = async (name) => {
   const modulePath = path.resolve(directories.pluginDir, name);
@@ -11,7 +25,15 @@ const getModule = async (name) => {
 
   try {
     await fs.access(expressFile, fsConst.F_OK);
-    delete require.cache[require.resolve(expressFile)];
+
+    const hash = await getFileHash(expressFile);
+    if (_.isNil(fileHashes[expressFile])) {
+      fileHashes[expressFile] = hash;
+    } else if (fileHashes[expressFile] !== hash) {
+      // Delete require cache
+      delete require.cache[require.resolve(expressFile)];
+    }
+
     return expressFile;
   } catch {
     return false;
@@ -41,8 +63,10 @@ module.exports = (app) => {
     try {
       const module = require(pluginFile);
       const plugin = module({
-        router: express.Router(),
-        static: express.static
+        router: addWsToRouter(express.Router()),
+        static: express.static,
+        logger: logger,
+        _
       });
       app.set('views', [...app.get('views'), viewFolder]);
       await plugin(req, res, next);
