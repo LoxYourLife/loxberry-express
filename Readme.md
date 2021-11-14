@@ -30,14 +30,6 @@ exit 1;
 fi
 ```
 
-Within your `preroot.sh` you need to check the existence of the plugin using the `express.cgi` file
-
-DIR="$LBHOME/bin/plugins/express"
-if [! -d "$DIR" ]; then
-  echo "<ERROR> This plugin relys on the Express Plugin. Please ensure this is installed"
-  exit 1
-fi
-
 ## Installation
 
 Currently there is not a relase yet and the documentation in the loxwiki is still missing. Never the less can the plugin be installed using the following url:
