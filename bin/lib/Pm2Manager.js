@@ -40,19 +40,21 @@ const logFormat = (filteredLogs) =>
         logs.push(json);
       } else if (message.startsWith('    ')) {
         const index = logs.length - 1;
-        if (logs[index].error === null) {
-          logs[index].error = '';
+        if (logs[index]) {
+          if (logs[index].error === null) {
+            logs[index].error = '';
+          }
+          logs[index].error += `>    ${message}\n`;
+          return logs;
         }
-        logs[index].error += `>    ${message}\n`;
-      } else {
-        logs.push({
-          date: 'unknown',
-          level: 'ERROR',
-          message,
-          plugin: 'unknown',
-          error: null
-        });
       }
+      logs.push({
+        date: 'unknown',
+        level: 'ERROR',
+        message,
+        plugin: 'unknown',
+        error: null
+      });
 
       return logs;
     },
