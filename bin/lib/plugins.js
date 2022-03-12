@@ -8,6 +8,7 @@ const _ = require('lodash');
 const crypto = require('crypto');
 const fileHashes = {};
 const { addWsToRouter } = require('./webSocket');
+const i18next = require('i18next');
 
 const getFileHash = async (fileName) => {
   const file = await fs.open(fileName, 'r');
@@ -40,10 +41,40 @@ const getModule = async (name) => {
   }
 };
 
-module.exports = (app) => {
+const getLanguage = async (defaultLanguage, templatePath, logger) => {
+  let languages = {};
+  try {
+    const files = await fs.readdir(templatePath);
+    languages = _.reduce(
+      files,
+      (acc, file) => {
+        const content = require(path.resolve(templatePath, file));
+        const language = file.replace('.js', '');
+        acc[language] = {
+          translation: content
+        };
+        return acc;
+      },
+      {}
+    );
+  } catch {
+    logger.info('No language files available');
+  }
+
+  return i18next.init({
+    lng: defaultLanguage,
+    fallbackLng: Object.keys(languages),
+    debug: false,
+    resources: languages
+  });
+};
+
+module.exports = (app, loxberryLanguage) => {
   router.use('/:name', async (req, res, next) => {
     const pluginName = req.params.name;
     const modulePath = path.resolve(directories.pluginDir, pluginName);
+    const templatePath = path.resolve(directories.templateDir, pluginName, 'lang');
+
     const niceName = pluginName
       .split('_')
       .map(([first, ...rest]) => first.toUpperCase() + rest.join(''))
@@ -61,14 +92,26 @@ module.exports = (app) => {
     const viewFolder = path.join(modulePath, '/views');
 
     try {
+      const translate = await getLanguage(loxberryLanguage, templatePath, logger);
       const module = require(pluginFile);
       const plugin = module({
         router: addWsToRouter(express.Router()),
         static: express.static,
         logger: logger,
-        _
+        _,
+        translate
       });
       app.set('views', [...app.get('views'), viewFolder]);
+      const originalRender = res.render;
+
+      res.render = (view, options, fn) => {
+        if (_.has(options, 'helpers')) {
+          options.helpers = _.assign({ t: translate }, _.get(options, 'helpers'));
+        } else {
+          options.helpers = { t: translate };
+        }
+        originalRender.call(res, view, options, fn);
+      };
       await plugin(req, res, next);
     } catch (e) {
       logger.error('Something went wrong', e);

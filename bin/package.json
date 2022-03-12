@@ -7,6 +7,7 @@
     "lib": "lib"
   },
   "scripts": {
+    "dev": "nodemon -w ./ index.js",
     "start": "PM2_HOME=$(pwd)/.pm2 pm2 start express.config.js",
     "stop": "PM2_HOME=$(pwd)/.pm2 pm2 stop express.config.js",
     "restart": "PM2_HOME=$(pwd)/.pm2 pm2 restart express.config.js",
@@ -21,9 +22,11 @@
     "express": "4.17.1",
     "express-fileupload": "1.2.1",
     "express-handlebars": "5.3.4",
+    "i18next": "^21.5.2",
     "jayson": "3.6.5",
-    "ws": "8.2.3",
-    "pm2": "5.1.2"
+    "nodemon": "2.0.15",
+    "pm2": "5.1.2",
+    "ws": "8.2.3"
   },
   "author": "Ronald Marske",
   "license": "ISC"

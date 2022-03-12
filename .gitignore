@@ -8,3 +8,6 @@ data/unifi.*
 **/logs/*
 dist
 plugins
+.DS_Store
+.vscode
+templates/my_test

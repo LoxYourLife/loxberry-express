@@ -7,7 +7,8 @@ const directories = () => {
       homedir: process.env.LBHOMEDIR,
       logdir: 'REPLACELBPLOGDIR',
       bindir: 'REPLACELBPBINDIR',
-      pluginDir: process.env.LBHOMEDIR + '/webfrontend/htmlauth/plugins'
+      pluginDir: process.env.LBHOMEDIR + '/webfrontend/htmlauth/plugins',
+      templateDir: process.env.LBPTEMPL
     };
   }
 
@@ -15,7 +16,8 @@ const directories = () => {
     homedir: path.join(__dirname, '../../loxberry'),
     logdir: path.join(__dirname, '../../logs'),
     bindir: path.join(__dirname, '../'),
-    pluginDir: path.join(__dirname, '../../plugins')
+    pluginDir: path.join(__dirname, '../../plugins'),
+    templateDir: path.join(__dirname, '../../templates')
   };
 };
 

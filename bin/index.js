@@ -7,12 +7,20 @@ const logger = require('./lib/Logger')('Express');
 const plugins = require('./lib/plugins');
 const path = require('path');
 const exphbs = require('express-handlebars');
-const createLayout = require('./lib/createLayout');
+const getLayout = require('./lib/loxberry/getLayout');
 const { onUpgrade } = require('./lib/webSocket');
 const directories = require('./lib/directories');
+const { getLanguage } = require('./lib/loxberry/jsonRpc');
 
 const createServer = async () => {
-  await createLayout();
+  await getLayout();
+  let loxberryLanguage = 'en';
+  try {
+    loxberryLanguage = await getLanguage();
+  } catch {
+    logger.debug('Unable to fetch Loxberry system language. Falling back to EN');
+  }
+
   const app = express();
 
   app.use(function (req, res, next) {
@@ -23,17 +31,16 @@ const createServer = async () => {
 
   app.use(fileUpload({ createParentPath: true }));
   app.use(bodyParser.json());
-  app.engine(
-    '.hbs',
-    exphbs({
-      extname: '.hbs',
-      layoutsDir: path.resolve('./', 'views/layouts')
-    })
-  );
+  const handlebars = exphbs({
+    extname: '.hbs',
+    layoutsDir: path.resolve('./', 'views/layouts')
+  });
+
+  app.engine('.hbs', handlebars);
   app.set('view engine', '.hbs');
 
   app.set('views', [path.resolve('./', 'views')]);
-  app.use('/plugins', plugins(app));
+  app.use('/plugins', plugins(app, loxberryLanguage));
   app.use('/system', express.static(path.resolve(directories.homedir, 'webfrontend/html/system')));
 
   app.get('*', (req, res, next) => {
