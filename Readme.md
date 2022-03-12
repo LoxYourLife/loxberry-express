@@ -64,18 +64,19 @@ Parameters:
 * static: a symlink to [express.static]
 * logger: A logger class with `info`, `debug`, `warn` and `error` methods. See Logger section.
 * _: the lodash library
+* translate: a function to access the tranlations like `translate('hello')`
 
 You can decide which parameter you need by using destructing. Let's assume you just want to use the router: `module.exports = ({router}) => {...`. An example with router logger and lodash would look like this: `module.exports = ({router, logger, _}) => { ...`.
 
 
-```
+```js
 module.exports = ({router, static}) => {
   return router;
 };
 ```
 
 #### Providing a route
-```
+```js
 module.exports = ({router}) => {
   router.get('/', (req, res) => {
     res.send('ok'); // for normal text content
@@ -87,7 +88,7 @@ module.exports = ({router}) => {
 ```
 
 You can of course return more than just one route
-```
+```js
 module.exports = ({router}) => {
   router.get('/', (req, res) => {
     res.render('index', {title: 'MyPluginTitle'});
@@ -108,7 +109,7 @@ The Websocket implementation is a custom one inspired by the `express-ws` librar
 * the request
 * a next function
 
-```
+```js
 const clients = [];
 module.exports = ({router, logger}) => {
   router.ws('/foo', (ws, request, next) => {
@@ -155,13 +156,28 @@ RewriteRule ^index.cgi http://localhost:3000/plugins/express [P,L]
 RewriteRule ^my-express-routes/(.\*) http://localhost:3000/plugins/express/$1 [P,L]
 ```
 
+### Translation files
+
+with express you also have the possibility to use translations if you like to. Like other plugins your translation files
+need to be placed into `templates/lang/`. Every js file in there get's picked up and the name of the file represents
+the language. For english you need to place a file named `en.js`. The File is a normal js file and returns a json format
+ with key value pairs. The key is then used to access the translation using the `translate` function in node or `{{t 'key'}}` in handlebars.
+
+#### File Content
+
+```js
+module.exports = {
+  key: 'value
+}
+```
+
 ### Handlebars template engine
 
 This is the default template engine for the express server and currently the only one. The view/template files are 
 located in `webfrontend/htmlauth/views` directory in your plugin. Every file need the filextension `*.hbs`.
 
 views/index.hbs
-```
+```html
 <h1>This is my First Template</h1>
 ```
 To render the file you ned to use `res.render` in the the `express.js` file: `res.render('index', {title: 'Foobar'})`. 
@@ -197,7 +213,7 @@ res.render('index', {title:'My Page title', myTitle: 'Hello World Demo', name: '
 The simplified layout would look like this: (title is replaced with "My Page Title" and body is replaced with your
 index.hbs view.
 
-```
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -208,6 +224,14 @@ index.hbs view.
   {{{body}}}
 </body>
 </html>
+```
+#### Render with translation files
+
+To access the translation files there is a magic helper named `t`. With that helper you cann access the translations.
+[i18next] is used as a translation helper and you can take advantage of their documentation.
+
+```html
+<h1>{{t 'hello world'}}</h1>
 ```
 
 ## Logger
@@ -231,6 +255,7 @@ At the moment all logs are written, but there is the plan that you can condfigfu
 [mod_rewrite]: https://httpd.apache.org/docs/2.4/mod/mod_rewrite.html
 [mod_proxy]: https://httpd.apache.org/docs/2.4/mod/mod_proxy.html
 [Handlebars]: https://handlebarsjs.com/
+[i18next]: https://www.i18next.com/]
 [express.static]: https://expressjs.com/de/starter/static-files.html
 [postinstall]: https://www.loxwiki.eu/pages/viewpage.action?pageId=23462653#Pluginf%C3%BCrdenLoxberryentwickeln(abVersion1.x)-Rootverzeichnis-Datei:postinstall.shYellowOptional
 [preroot]: https://www.loxwiki.eu/pages/viewpage.action?pageId=23462653#Pluginf%C3%BCrdenLoxberryentwickeln(abVersion1.x)-Rootverzeichnis-Datei:preroot.shYellowOptional
