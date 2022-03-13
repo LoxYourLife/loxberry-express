@@ -73,7 +73,8 @@ module.exports = (app, loxberryLanguage) => {
   router.use('/:name', async (req, res, next) => {
     const pluginName = req.params.name;
     const modulePath = path.resolve(directories.pluginDir, pluginName);
-    const templatePath = path.resolve(directories.templateDir, pluginName, 'lang');
+    const templatePath = path.resolve(directories.templateDir, pluginName);
+    const languagePath = path.resolve(templatePath, 'lang');
 
     const niceName = pluginName
       .split('_')
@@ -89,10 +90,8 @@ module.exports = (app, loxberryLanguage) => {
       return res.status(404).send('404');
     }
 
-    const viewFolder = path.join(modulePath, '/views');
-
     try {
-      const translate = await getLanguage(loxberryLanguage, templatePath, logger);
+      const translate = await getLanguage(loxberryLanguage, languagePath, logger);
       const module = require(pluginFile);
       const plugin = module({
         router: addWsToRouter(express.Router()),
@@ -101,7 +100,7 @@ module.exports = (app, loxberryLanguage) => {
         _,
         translate
       });
-      app.set('views', [...app.get('views'), viewFolder]);
+      app.set('views', [...app.get('views'), templatePath]);
       const originalRender = res.render;
 
       res.render = (view, options, fn) => {
@@ -119,7 +118,7 @@ module.exports = (app, loxberryLanguage) => {
     } finally {
       app.set(
         'views',
-        app.get('views').filter((p) => p !== viewFolder)
+        app.get('views').filter((p) => p !== templatePath)
       );
     }
   });
