@@ -92,6 +92,12 @@ module.exports = (app, loxberryLanguage) => {
 
     try {
       const translate = await getLanguage(loxberryLanguage, languagePath, logger);
+      const handlbarsTranslate = (context, options) => {
+        if (options && options.hash) {
+          return translate(context, options.hash);
+        }
+        return translate(context);
+      };
       const module = require(pluginFile);
       const plugin = module({
         router: addWsToRouter(express.Router()),
@@ -105,9 +111,12 @@ module.exports = (app, loxberryLanguage) => {
 
       res.render = (view, options, fn) => {
         if (_.has(options, 'helpers')) {
-          options.helpers = _.assign({ t: translate }, _.get(options, 'helpers'));
+          options.helpers = _.assign({ t: handlbarsTranslate }, _.get(options, 'helpers'));
         } else {
-          options.helpers = { t: translate };
+          options.helpers = { t: handlbarsTranslate };
+        }
+        if (!options.cache) {
+          options.cache = false;
         }
         originalRender.call(res, view, options, fn);
       };

@@ -167,16 +167,19 @@ the language. For english you need to place a file named `en.js`. The File is a 
 
 ```js
 module.exports = {
-  key: 'value
+  key: 'value'
+  anotherKey: 'another value {{name}}'
 }
+translate('key') // value
+translate('anotherKey', {name: 'foo'}) // another value foo
 ```
 
 ### Handlebars template engine
 
 This is the default template engine for the express server and currently the only one. The view/template files are 
-located in `webfrontend/htmlauth/views` directory in your plugin. Every file need the filextension `*.hbs`.
+located in `templates` directory in your plugin. Every file need the filextension `*.hbs`.
 
-views/index.hbs
+templates/index.hbs
 ```html
 <h1>This is my First Template</h1>
 ```
@@ -198,7 +201,7 @@ More on this on the [Loxberry Documentation](https://www.loxwiki.eu/display/LOXB
 To know how the syntax for [Handlebars] works, i'd recomment to checkout their documentation.
 Here is a basic example:
 ```
-// views/index.hbs
+// templates/index.hbs
 <h1>{{myTitle}}</h1>
 <div>Hello {{name}}</div>
 
@@ -230,8 +233,16 @@ index.hbs view.
 To access the translation files there is a magic helper named `t`. With that helper you cann access the translations.
 [i18next] is used as a translation helper and you can take advantage of their documentation.
 
+```js
+module.exports = {
+  helloWorld: 'Hello World'
+  hello: 'Hello {{name}}'
+}
+```
+
 ```html
-<h1>{{t 'hello world'}}</h1>
+<h1>{{t 'helloWorld'}}</h1>
+<h2>{{t 'hello' name='Foo'}}</h2>
 ```
 
 ## Logger
