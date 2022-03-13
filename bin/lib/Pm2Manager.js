@@ -38,6 +38,7 @@ const logFormat = (filteredLogs) =>
         const matches = message.match(regex);
         const json = { date: matches[1], plugin: matches[2], level: matches[3], message: matches[4], error: null };
         logs.push(json);
+        return logs;
       } else if (message.startsWith('    ')) {
         const index = logs.length - 1;
         if (logs[index]) {
