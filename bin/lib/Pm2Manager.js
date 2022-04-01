@@ -36,6 +36,7 @@ const logFormat = (filteredLogs) =>
       if (message.startsWith('[')) {
         const regex = /^\[([^\]]+)\] ([^|]+)\|([a-z]+): (.*)$/i;
         const matches = message.match(regex);
+        // TODO: Fix when no match was found
         const json = { date: matches[1], plugin: matches[2], level: matches[3], message: matches[4], error: null };
         logs.push(json);
         return logs;

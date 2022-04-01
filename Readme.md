@@ -4,7 +4,7 @@ This plugin allows you to create loxberry plugins easily with nodeJS and [Expres
 Normally plugins can be written using Pearl or PHP. NodeJs was possible even before this plugin by providing everything yourself. Websockets can be handled as well.
 
 **Attention**
-> The functionality comes a a pluin to the loxberry. If you want to rely on this in your plugin, you need to check if the express plugin is installed on the target loxberry system. In case it's not installed, the installation routine should be stopped with a message to the user that the express plugin is required.
+> The functionality comes as a pluin to the loxberry. If you want to rely on this in your plugin, you need to check if the express plugin is installed on the target loxberry system. In case it's not installed, the installation routine should be stopped with a message to the user that the express plugin is required.
 
 To do such check i'd recomment using the [preroot] file. There you can than easily check the existence with one of the following sequences.
 ```
@@ -115,7 +115,7 @@ module.exports = ({router, logger}) => {
   router.ws('/foo', (ws, request, next) => {
     ws.on('open', () => clients.push(ws));
     ws.on('message', (message) => {
-      logger.debug(`received message: ${message}');
+      logger.debug(`received message: ${message}`);
       ws.send(message.toString());
     });
   });

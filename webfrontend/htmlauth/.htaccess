@@ -1,2 +1,0 @@
-RewriteEngine On
-RewriteRule ^node/(.*) http://localhost:3000/plugins/express/$1 [P,L]

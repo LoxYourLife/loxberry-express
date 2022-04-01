@@ -13,7 +13,7 @@ module.exports = [
       NODE_ENV: 'production'
     },
     out_file: path.resolve(directories.logdir, 'express.log'),
-    error_file: path.resolve(directories.logdir, './express-error.log'),
+    error_file: path.resolve(directories.logdir, 'express-error.log'),
     pid_file: path.resolve(directories.logdir, 'express.pid'),
     watch: false
   }

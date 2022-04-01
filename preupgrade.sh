@@ -19,8 +19,7 @@ cp -p -v -r $ARGV5/data/plugins/$ARGV3/ /tmp/$ARGV1\_upgrade/data
 cp -p -v -r $ARGV5/log/plugins/$ARGV3/ /tmp/$ARGV1\_upgrade/log
 
 echo "<INFO> Stopping Service"
-npm --prefix $ARGV5/bin/plugins/$ARGV3 run stop
-npm --prefix $ARGV5/bin/plugins/$ARGV3 run manager:stop
+npm --prefix $ARGV5/bin/plugins/$ARGV3 run delete
 
 # Exit with Status 0
 exit 0

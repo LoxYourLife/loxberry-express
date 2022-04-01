@@ -8,8 +8,6 @@ ARGV4=$4 # Forth argument is Plugin version
 ARGV5=$5 # Fifth argument is Base folder of LoxBerry
 
 echo "<INFO> Stopping Service"
-npm --prefix $ARGV5/bin/plugins/$ARGV3 run stop
-npm --prefix $ARGV5/bin/plugins/$ARGV3 run manager:stop
 npm --prefix $ARGV5/bin/plugins/$ARGV3 run delete
 
 # Enable proxy mode for apache2

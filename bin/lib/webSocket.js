@@ -18,7 +18,7 @@ const onUpgrade = (app) => (req, sock, head) => {
   websockets[req.url].handleUpgrade(req, sock, head, (websocket) => {
     req.ws = websocket;
     websocket.on('close', () => {
-      if (websockets[req.url].clients.size === 0) {
+      if (websockets[req.url] && websockets[req.url].clients.size === 0) {
         delete websockets[req.url];
       }
     });
@@ -26,8 +26,6 @@ const onUpgrade = (app) => (req, sock, head) => {
     app.handle(req, new http.ServerResponse(req), () => {
       if (!req.wsHandled) {
         sock.destroy();
-      } else {
-        websocket.emit('open');
       }
     });
   });
@@ -51,6 +49,7 @@ const addWsToRouter = (router) => {
       req.wsHandled = true;
       try {
         handler(req.ws, req, () => {});
+        req.ws.emit('open');
         next();
       } catch (error) {
         next(error);

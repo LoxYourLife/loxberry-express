@@ -6,11 +6,12 @@ const fileUpload = require('express-fileupload');
 const logger = require('./lib/Logger')('Express');
 const plugins = require('./lib/plugins');
 const path = require('path');
-const exphbs = require('express-handlebars');
+const { engine } = require('express-handlebars');
 const getLayout = require('./lib/loxberry/getLayout');
 const { onUpgrade } = require('./lib/webSocket');
 const directories = require('./lib/directories');
 const { getLanguage } = require('./lib/loxberry/jsonRpc');
+const system = require('./lib/system');
 
 const createServer = async () => {
   await getLayout();
@@ -31,7 +32,7 @@ const createServer = async () => {
 
   app.use(fileUpload({ createParentPath: true }));
   app.use(bodyParser.json());
-  const handlebars = exphbs({
+  const handlebars = engine({
     extname: '.hbs',
     layoutsDir: path.resolve('./', 'views/layouts')
   });
@@ -41,6 +42,8 @@ const createServer = async () => {
 
   app.set('views', [path.resolve('./', 'views')]);
   app.use('/plugins', plugins(app, loxberryLanguage));
+  app.use('/system/express', system);
+
   app.use('/system', express.static(path.resolve(directories.homedir, 'webfrontend/html/system')));
 
   app.get('*', (req, res, next) => {
