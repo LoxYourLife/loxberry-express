@@ -11,16 +11,22 @@ const i18next = require('i18next');
 const getModule = async (name) => {
   const modulePath = path.resolve(directories.pluginDir, name);
   const expressFile = path.resolve(modulePath, 'express.js');
+  const expressFile2 = path.resolve(modulePath, 'express/express.js');
 
   try {
     await fs.access(expressFile, fsConst.F_OK);
     return expressFile;
   } catch {
-    return false;
+    try {
+      await fs.access(expressFile2, fsConst.F_OK);
+      return expressFile2;
+    } catch {
+      return false;
+    }
   }
 };
 
-const getLanguage = async (defaultLanguage, templatePath, logger) => {
+const getLanguage = async (defaultLanguage, templatePath) => {
   let languages = {};
   try {
     const files = await fs.readdir(templatePath);
@@ -37,7 +43,7 @@ const getLanguage = async (defaultLanguage, templatePath, logger) => {
       {}
     );
   } catch {
-    logger.info('No language files available');
+    languages = {};
   }
 
   return i18next.init({
@@ -69,7 +75,7 @@ module.exports = (app, loxberryLanguage) => {
     }
 
     try {
-      const translate = await getLanguage(loxberryLanguage, languagePath, logger);
+      const translate = await getLanguage(loxberryLanguage, languagePath);
       const handlbarsTranslate = (context, options) => {
         if (options && options.hash) {
           return translate(context, options.hash);
