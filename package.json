@@ -6,7 +6,7 @@
   "repository": "github:LoxYourLife/loxberry-express.git",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && rm -rf webfrontend/htmlauth/assets && cp -r build/assets webfrontend/htmlauth/assets && cp build/build.html templates/index.html",
     "serve": "vite preview",
     "lint": "eslint bin",
     "prettify": "prettier --write bin",

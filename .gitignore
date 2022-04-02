@@ -2,12 +2,10 @@
 node_modules
 loxberry
 !bin/lib/loxberry
-data/unifi.*
-.pm2
+bin/.pm2
 !logs/.gitkeep
 **/logs/*
-dist
+build
 plugins
 .DS_Store
 .vscode
-templates/my_test

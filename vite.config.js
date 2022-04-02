@@ -1,18 +1,19 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
-import { quasar, transformAssetUrls } from '@quasar/vite-plugin';
+import { quasar } from '@quasar/vite-plugin';
 
 module.exports = defineConfig({
   base: '',
+  root: 'app',
   plugins: [vue(), quasar({ sassVariables: 'app/quasar.extras.sass' })],
   build: {
-    outDir: 'webfrontend/htmlauth/views',
+    outDir: path.resolve(__dirname, 'build'),
     assetsDir: 'assets',
-    emptyOutDir: false,
+    emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'index.html')
+        main: path.resolve(__dirname, 'app/build.html')
       },
       // make sure to externalize deps that shouldn't be bundled
       // into your library
