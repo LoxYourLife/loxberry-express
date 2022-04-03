@@ -184,7 +184,7 @@ export default {
     });
     const loadTelemetry = async () => {
       const [host] = window.location.host.split(':');
-      webSocket = new WebSocket(`ws://${host}:3001`);
+      webSocket = new WebSocket(`ws://${host}:3301`);
       webSocket.onmessage = async (event) => {
         try {
           const data = JSON.parse(event.data);

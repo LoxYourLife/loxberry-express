@@ -35,6 +35,6 @@ wss.on('connection', (ws) => {
   });
 });
 
-server.listen(process.env.PORT || 3001, () => {
+server.listen(3301, () => {
   logger.info(`Express Manager on port ${server.address().port} :)`);
 });

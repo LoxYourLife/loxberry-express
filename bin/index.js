@@ -52,8 +52,8 @@ const createServer = async () => {
     res.status(404);
   });
 
-  const server = app.listen(3000, '0.0.0.0', () => {
-    logger.info(`LoxBerry Express Server listening at http://localhost:3000`);
+  const server = app.listen(3300, '0.0.0.0', () => {
+    logger.info(`LoxBerry Express Server listening at http://localhost:3300`);
   });
 
   server.on('upgrade', onUpgrade(app));
