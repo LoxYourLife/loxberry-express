@@ -4,7 +4,7 @@
     <q-virtual-scroll ref="logRef" style="max-height: 420px;" component="q-list" :items="logs" separator @virtual-scroll="onVirtualScroll">
       <template v-slot="{ item, index }">
         <q-item :key="index" dense :class="textColor(item.level)">
-          <q-icon :name="icon(item.level)" size="sm" class="q-mr-xs" />
+          <q-icon :name="icon(item.level)" size="xs" class="q-mr-xs" />
           <q-badge align="middle" outline :label="item.date" color="grey-8" class="q-mr-xs" />
           <q-badge align="middle" outline :label="item.plugin" color="grey-8" class="q-mr-xs" />
           <span class="text-weight-thin">{{item.plugin}}:</span>
@@ -18,9 +18,13 @@
 .monospaced {
   font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono',
     'Bitstream Vera Sans Mono', 'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+}
+.monospaced .q-item {
+  min-height: 21px;
 }
 .q-badge {
-  max-height: 20px;
+  max-height: 18px;
 }
 .pre-line {
   white-space: pre-line;

@@ -10,7 +10,7 @@
     "serve": "vite preview",
     "lint": "eslint bin",
     "prettify": "prettier --write bin",
-    "zip": "rm -rf express.zip && zip -r express.zip . -x \".git/*\" -x \"node_modules/*\" -x \"loxberry/*\" -x \"dist/*\" -x \"plugins/*\" -x \"bin/node_modules/*\" -x \"bin/.pm2/*\""
+    "zip": "rm -rf express.zip && zip -r express.zip . -x \".git/*\" -x \"node_modules/*\" -x \"loxberry/*\" -x \"build/*\" -x \"logs/*\" -x \"bin/node_modules/*\" -x \"bin/.pm2/*\""
   },
   "author": "Ronald Marske",
   "license": "ISC",
@@ -22,6 +22,7 @@
     "@quasar/extras": "1.13.5",
     "@quasar/vite-plugin": "1.0.8",
     "@vitejs/plugin-vue": "2.3.1",
+    "axios": "0.26.1",
     "eslint": "7.32.0",
     "lodash": "4.17.21",
     "prettier": "2.6.1",
@@ -29,6 +30,7 @@
     "sass": "1.49.10",
     "vite": "2.9.1",
     "vue": "3.2.31",
-    "vue-router": "4.0.14"
+    "vue-router": "4.0.14",
+    "vuex": "4.0.2"
   }
 }

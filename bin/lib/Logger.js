@@ -12,32 +12,35 @@ const WARN = 'warn';
 const ERROR = 'error';
 
 class Logger {
-  constructor(name) {
+  constructor(name, config) {
     this.name = name;
+    this.loglevel = config.loglevel;
   }
 
   info(message) {
-    stdOut(format(this.name, INFO, message));
+    if (this.loglevel.info) stdOut(format(this.name, INFO, message));
   }
 
   debug(message) {
-    stdOut(format(this.name, DEBUG, message));
+    if (this.loglevel.debug) stdOut(format(this.name, DEBUG, message));
   }
 
   warn(message) {
-    stdOut(format(this.name, WARN, message));
+    if (this.loglevel.warning) stdOut(format(this.name, WARN, message));
   }
 
   error(message, error) {
-    stdErr(format(this.name, ERROR, message));
+    if (this.loglevel.error) {
+      stdErr(format(this.name, ERROR, message));
 
-    if (error && error.stack) {
-      const errorInfo = `    ${error.message}\n    ${error.name}\n    ${error.code}\n    ${error.signal}\n    ${
-        error.stack || error.toString()
-      }`;
-      return stdErr(errorInfo);
+      if (error && error.stack) {
+        const errorInfo = `    ${error.message}\n    ${error.name}\n    ${error.code}\n    ${error.signal}\n    ${
+          error.stack || error.toString()
+        }`;
+        return stdErr(errorInfo);
+      }
     }
   }
 }
 
-module.exports = (name) => new Logger(name);
+module.exports = (name, config) => new Logger(name, config);

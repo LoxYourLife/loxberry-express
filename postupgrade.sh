@@ -21,13 +21,15 @@ PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
 
 echo "<INFO> Copy back existing config files"
-cp -p -v -r $PTEMPL\_upgrade/logs/$PDIR/* $PLOGS
+cp -p -v -r $PTEMPL\_upgrade/log/$PDIR/* $PLOGS
+cp -p -v -r $PTEMPL\_upgrade/config/$PDIR/* $PCONFIG 
 
 echo "<INFO> Remove temporary folders"
 rm -r $PTEMPL\_upgrade/
 
 echo "<INFO> Update Dependencies"
 npm --prefix $PBIN ci --only=production
+NODE_ENV=production node $PBIN/setupHtaccess.js
 
 echo "<INFO> Start Event App"
 npm --prefix $PBIN run start

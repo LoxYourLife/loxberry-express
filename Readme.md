@@ -4,64 +4,107 @@ This plugin allows you to create loxberry plugins easily with nodeJS and [Expres
 Normally plugins can be written using Pearl or PHP. NodeJs was possible even before this plugin by providing everything yourself. Websockets can be handled as well.
 
 **Attention**
-> The functionality comes as a pluin to the loxberry. If you want to rely on this in your plugin, you need to check if the express plugin is installed on the target loxberry system. In case it's not installed, the installation routine should be stopped with a message to the user that the express plugin is required.
+> The functionality comes as a pluin to the loxberry. If you want to rely on this in your plugin, you need to check if the express plugin is installed on the target loxberry system. In case it's not installed, the installation routine should not be interruped. A check should be done while accessing the plugin. Here is a small example.
 
-To do such check i'd recomment using the [preroot] file. There you can than easily check the existence with one of the following sequences.
+webfrontend/htmlauth/index.cgi
+```perl
+#!/usr/bin/perl
+
+require LoxBerry::Web;
+use LoxBerry::System;
+use CGI;
+
+# This is to check if the express plugin is installed and in case it's not
+
+# it will print an error with the hint that the unifi_presence plugin requires
+
+# the express plugin.
+
+my $minRequiredVersion = "0.0.4";
+my $unvalidVersion = "0.1.0";
+my $version = LoxBerry::System::pluginversion("express");
+
+if ($version && $version ge $minRequiredVersion && $version lt $unvalidVersion) {
+my $q = CGI->new;
+print $q->header(-status => 307, -location => '/admin/express/plugins/unifi_presence');
+exit(0);
+}
+
+my $template = HTML::Template->new(
+    filename => "$lbptemplatedir/error.html",
+global_vars => 1,
+loop_context_vars => 1,
+die_on_bad_params => 0,
+);
+$template->param( REQUIRED_VERSION => $minRequiredVersion);
+$template->param( MAX_VERSION => $unvalidVersion);
+
+%L = LoxBerry::System::readlanguage($template, "language.ini");
+LoxBerry::Web::lbheader("<Plugin name>", "", "");
+print $template->output();
+LoxBerry::Web::lbfooter();
 ```
-#!/bin/bash
-EXPRESS=$(perl -e 'use LoxBerry::System;print !LoxBerry::System::plugindata("express") ? 1 : 0;exit;')
-if [ $EXPRESS = "1" ]
-then
-  echo "<ERROR> the plugin youre trying to install requires the Express plugin. Please install this first."
-  exit 1;
-fi
 
-#Check if the plugin exists and if the version is >= 0.0.1**
-REQUIRED_VERSION="0.0.1"
-EXPRESS=$(perl -e "use LoxBerry::System;print !LoxBerry::System::plugindata("express") ? 1 : LoxBerry::System::pluginversion('express') ge '$REQUIRED_VERSION' ? 0 : 2;exit;")
-if [ $EXPRESS = "1" ]
-then
-  echo "<ERROR> the plugin youre trying to install requires the Express plugin. Please install this first."
-  exit 1;
-elif [ $EXPRESS = "2" ]
-then
-  echo "<ERROR> the plugin youre trying to install requires the Express plugin with a version >= $REQUIRED_VERSION Please upgrade the Express plugin."
-exit 1;
-fi
+templates/error.html
+```html
+<h3><TMPL_VAR COMMON.MISSING_PLUGIN></h3>
+<p style="color: red">
+  <TMPL_VAR COMMON.REQUIRE_EXPRESS_1>
+  <a href="https://loxwiki.atlassian.net/wiki/spaces/LOXBERRY/pages/1673527328/Express+Server
+" target="_blank"><TMPL_VAR COMMON.EXPRESS_PLUGIN> (&gt;=<TMPL_VAR REQUIRED_VERSION> & &lt; <TMPL_VAR MAX_VERSION>)</a>
+  <TMPL_VAR COMMON.REQUIRE_EXPRESS_2>
+<p>
+```
+
+language_files
+```ini
+// templates/lang/language_de.ini
+[COMMON]
+MISSING_PLUGIN="Fehlendes Plugin"
+REQUIRE_EXPRESS_1="Dieses Plugin benötigt das"
+REQUIRE_EXPRESS_2="Plugin. Du kannst es entweder installieren oder das Plugin deinstallieren."
+EXPRESS_PLUGIN="Express Server"
+
+// templates/lang/language_en.ini
+[COMMON]
+MISSING_PLUGIN="Missing Plugin"
+REQUIRE_EXPRESS_1="This plugin reguires the"
+REQUIRE_EXPRESS_2="plugin. Either install the required plugin or uninstall this one."
+EXPRESS_PLUGIN="Express Server"
 ```
 
 ## Installation
 
-Currently there is not a relase yet and the documentation in the loxwiki is still missing. Never the less can the plugin be installed using the following url:
-https://github.com/LoxYourLife/loxberry-express/archive/refs/heads/master.zip
-
+For installation you can check the releases page of GitHub or the official documentation in the [Loxwiki].
 
 ## How does it work
 
-The idea of the plugin is to provide an [ExpressJs] Server where you can hook into. To do that, your plugin needs an `express.js` file in `webfrontend/htmlauth`. This file is automatically picked up by the server as soon as it's receiving a request fopr your plugin. To let Express handle your requests you need to let [Apache2] know, that you want to use the express server instead of apache. This is done using [Apache2] [mod_rewrite] and [mod_proxy] module.
+The idea of the plugin is to provide an [ExpressJs] Server where you can hook into. To do that, your plugin needs an `express.uth.js` and/or a `express.js` file in `webfrontend/htmlauth/express`. Those file is automatically picked up by the server as soon as it's receiving a request for your plugin. The difference to those files is, that for `express.auth` you need to be logged in into loxberry and for `express` not. It's basically the same as `html` and `htmlauth` for typical plugins.
 
-The Express Server runs at port 3000 and allows your plugin to hook into the url path `/plugins/:name`. The Name is the plugins defined `folder_name` from the plugin configuration file `plugin.cfg`. You can also bypass Apache2 by sending a request to `http://<loxberry ip>:3000/plugins/<plugin name>`.
+To let Express handle your requests you need to apply the `index.cgi` as mentioned in the pervious chapter. There we check for the existence of Express and the correct versions.
+
+The Express Server runs at port 3300 by default and can be changed after installation and allows your plugin to hook into the url path `/admin/express/plugins/:name` for authoried requests and `/express/plugins/:name` for unauthorized requests. The Name is the plugin defined `folder_name` from the plugin configuration file `plugin.cfg`. You should only use those 2 urls and never use a port directly. The ports can be changed and could be different for each installation.
 
 *Attention:*
-> Your express.js file is cached during the execution time of the server. Every server restart clears the cache und picks up the file again. Additionally every file change is noticed as well and the cache is invalidated to allow an easy install and upgrade process of your plugin without the need of restarting the express server. Let's assume you have a request counter and every request adds one up. You would write a `let requests = 0` in your file and on every request `request += 1`. This works fine until the server is restarted or the cache invalidated. The counter would then be `0` again.
+> Your express.js file is cached during the execution time of the server. Every server restart clears the cache und picks up the file again. During `postupgrade` your plugin should and have to send a curl request to the express server to invalidate the cache. This needs to be done after the dependencies are installed. `curl -X POST http://localhost/admin/express/system/plugin/<plugin_name>
 
 The module provides also some metrics and the possibility to `start`, `stop` and `restart` the express server. On top all the live logs are provided that you can check for errors and issues easily while developing.
 
 ![Screenshot](docs/screen.jpg)
 
-The [ExpressJs] server comes with the [Handlebars] template enginge. The Loxberry layout is provided by 
-default. 
+The [ExpressJs] server comes with the [Handlebars] template enginge and the Loxberry layout is provided by default. 
 
 Sometime you want to use Websockets, and now that's as easy as defining a route. You can even provide multiple websockets for different purposes in case you want to.
-
+_Attention:_
+> Websockets do only work in `express.js` and per url `/express/plugins/<plugin_name>/<path>` do to limitations of websocket with basic auth.
 
 ### Express.js handler
 
-To hook into the express server, the file needs to export a function. There is an object passed as a parameter list. The function needs to return the router to be able to work.
+To hook into the express server, the handler file needs to export a function. There is an object passed as a parameter list. The function needs to return the router to be able to work. The paramers are equal for `express.js` and `express.auth.js`
 
 Parameters:
 * router: The express router to specify your routes / url pathes you want to handle
-* static: a symlink to [express.static]
+* expressStatic: a symlink to [express.static]
 * logger: A logger class with `info`, `debug`, `warn` and `error` methods. See Logger section.
 * _: the lodash library
 * translate: a function to access the tranlations like `translate('hello')`
@@ -104,12 +147,13 @@ Everything you can do on router level in express you can also do in your plugin.
 
 ### Websockets
 
-The Websocket implementation is a custom one inspired by the `express-ws` library. To define a websocket handler in your express file, you can use `router.ws` instead of `router.get`. The provided arguments are:
+The Websocket implementation is a custom one inspired by the `express-ws` library. Websockets only work unauthorized at the moment due to limitations with websocket and basic auth. Every websocket definition in `express.auth.js` will not work. To define a websocket handler in your express file, you can use `router.ws` instead of `router.get`. The provided arguments are:
 * the socket
 * the request
 * a next function
 
 ```js
+// IMPORTANT: express.js NOT express.auth.js
 const clients = [];
 module.exports = ({router, logger}) => {
   router.ws('/foo', (ws, request, next) => {
@@ -126,35 +170,6 @@ module.exports = ({router, logger}) => {
 
 [express.js of this plugin](webfrontend/htmlauth/express.js)
 
-### Rewrite Rules for Apache to use Express
-
-You need to tell [Apache2] that you want to use express and your url path should be redirected to Express.
-Therefore you need to write an `.htaccess` file. The file will be placed inside `webfrontend/htmlauth` folder.
-Let's assume you write a plugin called "foobar", then the url to the plugin page would be `/admin/plugins/foobar/`. 
-By default the index.cgi file in the folder `webfrontend/htmlauth` would be used to render the page. If you want to use the default `router.get('/'...)` route you need to specify a redirect rule. ''Please keep in mind that tose rules only work relatively from `/admin/plugin/foobar/`. Only everything after the main route can be used.
-
-**Attention**:
-> `.htaccess` files need to be installed manually. If you follow the guidlines from the [postinstall] wiki than it's just a one liner.
-`cp webfrontend/htmlauth/.htaccess $ARGV5/webfrontend/htmlauth/plugins/$ARGV3/.htaccess`
-
-```
-RewriteEngine On # this is required
-RewriteRule ^index.cgi http://localhost:3000/plugins/express [P,L] #the redirect
-```
-
-If you want to redirect all content:
-```
-RewriteEngine On
-RewriteRule ^index.cgi http://localhost:3000/plugins/express [P,L]
-RewriteRule ^(.\*) http://localhost:3000/plugins/express/$1 [P,L]
-```
-
-Let's assume you just want to use `/admin/plugins/foobar/my-express-routes` for the express server.
-```
-RewriteEngine On
-RewriteRule ^index.cgi http://localhost:3000/plugins/express [P,L]
-RewriteRule ^my-express-routes/(.\*) http://localhost:3000/plugins/express/$1 [P,L]
-```
 
 ### Translation files
 
@@ -253,7 +268,7 @@ This works by default, you and don't need to think about this.
 The logfiles are stored in `LBHOME/logs/plugins/express/` and separated.
 Errors will be written into `express-errors.log` and normal logs into `express.log`.
 
-At the moment all logs are written, but there is the plan that you can condfigfure on your loxberry which logs you want to write. Fo example only `warn` and `error`. But it doesn't work yet.
+In the interface of the express server you can set a loglevel which is given for all plugins. It's maybe not the best approach, but accepted for now.
 
 ### Log methods
 * info(message: String)
@@ -270,3 +285,4 @@ At the moment all logs are written, but there is the plan that you can condfigfu
 [express.static]: https://expressjs.com/de/starter/static-files.html
 [postinstall]: https://www.loxwiki.eu/pages/viewpage.action?pageId=23462653#Pluginf%C3%BCrdenLoxberryentwickeln(abVersion1.x)-Rootverzeichnis-Datei:postinstall.shYellowOptional
 [preroot]: https://www.loxwiki.eu/pages/viewpage.action?pageId=23462653#Pluginf%C3%BCrdenLoxberryentwickeln(abVersion1.x)-Rootverzeichnis-Datei:preroot.shYellowOptional
+[Loxwiki]: https://loxwiki.atlassian.net/wiki/spaces/LOXBERRY/pages/1673527328/Express+Server

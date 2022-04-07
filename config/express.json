@@ -1,0 +1,10 @@
+{
+  "expressPort": "3300",
+  "managerPort": "3301",
+  "loglevel": {
+    "info": false,
+    "debug": false,
+    "warning": true,
+    "error": true
+  }
+}

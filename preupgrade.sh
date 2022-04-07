@@ -23,9 +23,11 @@ PBIN=$LBPBIN/$PDIR
 echo "<INFO> Creating temporary folders for upgrading"
 mkdir -p $PTEMPL\_upgrade
 mkdir -p $PTEMPL\_upgrade/log
+mkdir -p $PTEMPL\_upgrade/config
 
 echo "<INFO> Backing up existing config files"
 cp -p -v -r $PLOGS $PTEMPL\_upgrade/log
+cp -p -v -r $PCONFIG $PTEMPL\_upgrade/config
 
 echo "<INFO> Stopping Service"
 npm --prefix $PBIN run delete

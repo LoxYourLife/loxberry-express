@@ -9,3 +9,5 @@ build
 plugins
 .DS_Store
 .vscode
+
+express.zip

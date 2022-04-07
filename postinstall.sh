@@ -25,11 +25,17 @@ npm --prefix $PBIN ci --only=production
 
 # Enable proxy mode for apache2
 echo "<INFO> enabling proxy for apache"
-ln -s ../mods-available/proxy.load $LBHOMEDIR/system/apache2/mods-enabled/proxy.load
-ln -s ../mods-available/proxy_http.load $LBHOMEDIR/system/apache2/mods-enabled/proxy_http.load
-
-echo "<INFO> reloading apache"
+a2enmod proxy proxy_http proxy_wstunnel
 sudo systemctl reload apache2
+
+echo "<INFO> setting up express redirects"
+cp webfrontend/htmlauth/.htaccess $PHTMLAUTH/.htaccess
+mkdir -p $LBHOMEDIR/webfrontend/html/express
+mkdir -p $LBHOMEDIR/webfrontend/htmlauth/express
+
+NODE_ENV=production node $PBIN/setupHtaccess.js
+node $PBIN/updateExclude.js set
+
 
 echo "<INFO> starting services"
 npm --prefix $PBIN run start

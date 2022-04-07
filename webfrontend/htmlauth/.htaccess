@@ -1,0 +1,4 @@
+RewriteEngine ON
+
+RewriteCond %{REQUEST_URI}    !^/index.cgi
+RewriteRule ^logs$            index.cgi?foo=$1   

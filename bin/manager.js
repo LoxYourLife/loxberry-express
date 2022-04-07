@@ -2,16 +2,34 @@ process.env.NODE_ENV === ('/opt/loxberry' === process.env.HOME) ? 'production' :
 
 const express = require('express');
 const http = require('http');
+const fs = require('fs');
 const WebSocket = require('ws');
-const logger = require('./lib/Logger')('ExpressManager');
 const Pm2Manager = require('./lib/Pm2Manager');
+const directories = require('./lib/directories');
+const path = require('path');
+
+const configFile = path.resolve(directories.config, 'express.json');
+const config = require(configFile);
+
+const logger = require('./lib/Logger')('ExpressManager', config);
 
 const app = express();
 const server = http.createServer(app);
 
 const wss = new WebSocket.Server({ server });
 const clients = new Set();
-const pm2Manager = new Pm2Manager(clients);
+const pm2Manager = new Pm2Manager(clients, logger);
+
+fs.watch(configFile, {}, async () => {
+  delete require.cache[require.resolve(configFile)];
+  try {
+    const newConfig = require(configFile);
+    Object.assign(config, newConfig);
+    logger.loglevel = newConfig.loglevel;
+  } catch {
+    // ignore
+  }
+});
 
 wss.on('connection', (ws) => {
   pm2Manager.startTelemetryInterval();
@@ -35,6 +53,6 @@ wss.on('connection', (ws) => {
   });
 });
 
-server.listen(3301, () => {
+server.listen(config.managerPort, () => {
   logger.info(`Express Manager on port ${server.address().port} :)`);
 });

@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteRule ^index.cgi http://localhost:{{expressPort}}/auth/ [P,L]
+RewriteRule ^(.*) http://localhost:{{expressPort}}/auth/$1 [P,L]

@@ -1,28 +1,22 @@
 const express = require('express');
-const router = express.Router();
 const fs = require('fs').promises;
 const fsConst = require('fs').constants;
 const path = require('path');
-const directories = require('./directories');
+const directories = require('../lib/directories');
 const _ = require('lodash');
-const { addWsToRouter } = require('./webSocket');
+const { addWsToRouter } = require('../lib/webSocket');
 const i18next = require('i18next');
 
-const getModule = async (name) => {
-  const modulePath = path.resolve(directories.pluginDir, name);
-  const expressFile = path.resolve(modulePath, 'express.js');
-  const expressFile2 = path.resolve(modulePath, 'express/express.js');
+const getModule = async (name, auth) => {
+  const expressFileName = auth ? 'express.auth.js' : 'express.js';
+  const modulePath = path.join(directories.htmlauthPluginDir, name);
+  const expressFile = path.join(modulePath, 'express', expressFileName);
 
   try {
     await fs.access(expressFile, fsConst.F_OK);
     return expressFile;
   } catch {
-    try {
-      await fs.access(expressFile2, fsConst.F_OK);
-      return expressFile2;
-    } catch {
-      return false;
-    }
+    return false;
   }
 };
 
@@ -54,7 +48,8 @@ const getLanguage = async (defaultLanguage, templatePath) => {
   });
 };
 
-module.exports = (app, loxberryLanguage) => {
+module.exports = ({ app, language, config, auth }) => {
+  const router = express.Router();
   router.use('/:name', async (req, res, next) => {
     const pluginName = req.params.name;
     const templatePath = path.resolve(directories.templateDir, pluginName);
@@ -65,23 +60,18 @@ module.exports = (app, loxberryLanguage) => {
       .map(([first, ...rest]) => first.toUpperCase() + rest.join(''))
       .join(' ');
 
-    const logger = require('./Logger')(niceName);
+    const logger = require('../lib/Logger')(niceName, config);
     logger.info(`ACCESS ${req.method} ${req.url}`);
 
-    const pluginFile = await getModule(pluginName);
+    const pluginFile = await getModule(pluginName, auth);
     if (false === pluginFile) {
-      logger.error(`Plugin "${niceName}" does not provide an express.js file.`);
+      logger.error(`Plugin "${niceName}" does not provide an express.js file in "${auth ? 'htmlauth' : 'html'}" folder.`);
       return res.status(404).send('404');
     }
 
     try {
-      const translate = await getLanguage(loxberryLanguage, languagePath);
-      const handlbarsTranslate = (context, options) => {
-        if (options && options.hash) {
-          return translate(context, options.hash);
-        }
-        return translate(context);
-      };
+      const translate = await getLanguage(language, languagePath);
+
       const module = require(pluginFile);
       const plugin = module({
         router: addWsToRouter(express.Router()),
@@ -90,6 +80,13 @@ module.exports = (app, loxberryLanguage) => {
         _,
         translate
       });
+
+      const handlbarsTranslate = (context, options) => {
+        if (options && options.hash) {
+          return translate(context, options.hash);
+        }
+        return translate(context);
+      };
       app.set('views', [...app.get('views'), templatePath]);
       const originalRender = res.render;
 
@@ -104,7 +101,8 @@ module.exports = (app, loxberryLanguage) => {
         }
         originalRender.call(res, view, options, fn);
       };
-      await plugin(req, res, next);
+
+      return await plugin(req, res, next);
     } catch (e) {
       logger.error('Something went wrong', e);
       res.status(500).send('error');

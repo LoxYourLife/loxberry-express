@@ -26,10 +26,13 @@ kill -9 $(pgrep -f $PBIN/.pm2)
 
 # Enable proxy mode for apache2
 echo "<INFO> disabling proxy for apache"
-rm $LBHOMEDIR/system/apache2/mods-enabled/proxy.load
-rm $LBHOMEDIR/system/apache2/mods-enabled/proxy_http.load
-
-echo "<INFO> reloading apache"
+a2dismod proxy_http proxy_wstunnel proxy
 sudo systemctl reload apache2
+
+echo "<INFO> removing express redirects"
+rm -rf $LBHOMEDIR/webfrontend/html/express
+rm -rf $LBHOMEDIR/webfrontend/htmlauth/express
+
+node $PBIN/updateExclude.js remove 
 
 exit 0;

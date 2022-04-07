@@ -5,7 +5,6 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { spawn } = require('child_process');
 const directories = require('./directories');
-const logger = require('./Logger')('ExpressManager');
 
 const memory = (bytes) => {
   var sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -63,12 +62,13 @@ const logFormat = (filteredLogs) =>
   );
 
 module.exports = class Pm2Manager {
-  constructor(clients) {
+  constructor(clients, logger) {
     this.clients = clients;
     this.telemetryInterval = null;
     this.cachedTelemetry = {};
     this.logReader = null;
     this.errorLogReader = null;
+    this.logger = logger;
   }
 
   startTelemetryInterval() {
@@ -167,15 +167,15 @@ module.exports = class Pm2Manager {
   async handleCommand(command) {
     switch (command) {
       case 'start':
-        logger.info('Starting Express Server');
+        this.logger.info('Starting Express Server');
         await exec('npm run start', { cwd: directories.bindir });
         break;
       case 'stop':
-        logger.info('Stopping Express Server');
+        this.logger.info('Stopping Express Server');
         await exec('npm run stop', { cwd: directories.bindir });
         break;
       case 'restart':
-        logger.info('Restarting Express Server');
+        this.logger.info('Restarting Express Server');
         await exec('npm run restart', { cwd: directories.bindir });
         break;
     }

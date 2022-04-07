@@ -2,9 +2,8 @@ const fs = require('fs').promises;
 const path = require('path');
 const PRODUCTION = process.env.NODE_ENV === 'production';
 const { getHeader, getFooter } = require('./jsonRpc');
-const logger = require('../Logger')('Express');
 
-module.exports = async () => {
+module.exports = async (logger) => {
   let template = `<!DOCTYPE html>
 <html>
 <head>
