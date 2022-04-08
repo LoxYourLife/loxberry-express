@@ -7,7 +7,7 @@ const ip = require('ip');
 
 const loxoneTimeOffset = 1230764400; // 1.1.2009 00:00:00
 const getTimezoneOffset = () => {
-  const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
+  const timeZoneOffset = new Date('April 08, 2022 14:00:00 GMT+02:00').getTimezoneOffset() * 60 * 1000;
   return timeZoneOffset > 0 ? -timeZoneOffset : Math.abs(timeZoneOffset);
 };
 
