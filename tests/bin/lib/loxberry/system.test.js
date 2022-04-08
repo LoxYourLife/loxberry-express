@@ -304,8 +304,8 @@ describe('Loxberry System', () => {
       it('should return loxone date', async () => {
         await expect(system.dateToLox(new Date('August 21, 2021 14:02:25 GMT+02:00'))).resolves.toEqual('398786545');
       });
-      it('should return 0 on initial loxone date', async () => {
-        await expect(system.dateToLox(new Date('Januar 01, 2009 00:00:00 GMT+02:00'))).resolves.toEqual('0');
+      it('should return -1h on initial loxone date', async () => {
+        await expect(system.dateToLox(new Date('Januar 01, 2009 00:00:00 GMT+02:00'))).resolves.toEqual('-3600');
       });
     });
     describe('loxToDate', () => {

@@ -6,8 +6,8 @@ const os = require('os');
 const ip = require('ip');
 
 const loxoneTimeOffset = 1230764400; // 1.1.2009 00:00:00
-const getTimezoneOffset = () => {
-  const timeZoneOffset = new Date('April 08, 2022 14:00:00 GMT+02:00').getTimezoneOffset() * 60 * 1000;
+const getTimezoneOffset = (date) => {
+  const timeZoneOffset = date.getTimezoneOffset() * 60 * 1000;
   return timeZoneOffset > 0 ? -timeZoneOffset : Math.abs(timeZoneOffset);
 };
 
@@ -108,7 +108,7 @@ module.exports = class System {
 
   async dateToLox(date) {
     if (typeof _.get(date, 'getTime') != 'function') throw Error('Given date is not a valid date');
-    const timeZoneOffset = getTimezoneOffset();
+    const timeZoneOffset = getTimezoneOffset(date);
     const seconds = date.getTime() / 1000;
     return `${seconds - loxoneTimeOffset + timeZoneOffset / 1000 - 3600}`;
   }
