@@ -1,3 +1,6 @@
+[![Node.js CI](https://github.com/LoxYourLife/loxberry-express/actions/workflows/node.js.yml/badge.svg)](https://github.com/LoxYourLife/loxberry-express/actions/workflows/node.js.yml)
+
+
 # Loxberry Express Server Plugin
 
 This plugin allows you to create loxberry plugins easily with nodeJS and [ExpressJS] as the backend server.
