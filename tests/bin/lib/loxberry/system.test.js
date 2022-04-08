@@ -1,9 +1,14 @@
 const fileHandler = require('../../../../bin/lib/fileHandler');
 const System = require('../../../../bin/lib/loxberry/system');
 const os = require('os');
+const { time } = require('console');
 
 jest.mock('../../../../bin/lib/fileHandler');
 jest.mock('os');
+const getDateTimeOffset = (date) => {
+  const timeZoneOffset = date.getTimezoneOffset() * 60;
+  return timeZoneOffset > 0 ? -timeZoneOffset : Math.abs(timeZoneOffset);
+};
 describe('Loxberry System', () => {
   let system;
   beforeEach(() => {
@@ -302,10 +307,14 @@ describe('Loxberry System', () => {
         await expect(system.dateToLox()).rejects.toEqual(Error('Given date is not a valid date'));
       });
       it('should return loxone date', async () => {
-        await expect(system.dateToLox(new Date('August 21, 2021 14:02:25 GMT+02:00'))).resolves.toEqual('398786545');
+        const date = new Date('August 21, 2021 14:02:25 GMT+02:00');
+        const expected = 398779345 + getDateTimeOffset(date);
+        await expect(system.dateToLox(new Date('August 21, 2021 14:02:25 GMT+02:00'))).resolves.toEqual(`${expected}`);
       });
       it('should return -1h on initial loxone date', async () => {
-        await expect(system.dateToLox(new Date('Januar 01, 2009 00:00:00 GMT+02:00'))).resolves.toEqual('-3600');
+        const date = new Date('Januar 01, 2009 00:00:00 GMT+02:00');
+        const expected = -7200 + getDateTimeOffset(date);
+        await expect(system.dateToLox(new Date('Januar 01, 2009 00:00:00 GMT+02:00'))).resolves.toEqual(`${expected}`);
       });
     });
     describe('loxToDate', () => {
