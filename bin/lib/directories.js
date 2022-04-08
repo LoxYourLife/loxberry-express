@@ -8,10 +8,12 @@ const directories = () => {
       config: 'REPLACELBPCONFIGDIR',
       logdir: 'REPLACELBPLOGDIR',
       bindir: 'REPLACELBPBINDIR',
-      htmlauthPluginDir: process.env.LBHOMEDIR + '/webfrontend/htmlauth/plugins',
-      htmlExpressDir: process.env.LBHOMEDIR + '/webfrontend/html/express',
-      htmlauthExpressDir: process.env.LBHOMEDIR + '/webfrontend/htmlauth/express',
-      templateDir: process.env.LBPTEMPL
+      htmlauthPluginDir: path.join(process.env.LBHOMEDIR, 'webfrontend', 'htmlauth', 'plugins'),
+      htmlExpressDir: path.join(process.env.LBHOMEDIR, 'webfrontend', 'html', 'express'),
+      htmlauthExpressDir: path.join(process.env.LBHOMEDIR, 'webfrontend', 'htmlauth', 'express'),
+      templateDir: process.env.LBPTEMPL,
+      systemData: path.join(process.env.LBHOMEDIR, 'data', 'system'),
+      systemConfig: path.join(process.env.LBHOMEDIR, 'config', 'system')
     };
   }
 
@@ -23,7 +25,9 @@ const directories = () => {
     htmlauthPluginDir: path.join(__dirname, '../../loxberry/webfrontend/htmlauth/plugins'),
     htmlauthExpressDir: path.join(__dirname, '../../loxberry/webfrontend/htmlauth/express'),
     htmlExpressDir: path.join(__dirname, '../../loxberry/webfrontend/html/express'),
-    templateDir: path.join(__dirname, '../../loxberry/templates/plugins')
+    templateDir: path.join(__dirname, '../../loxberry/templates/plugins'),
+    systemData: path.join(__dirname, '../../loxberry/data/system'),
+    systemConfig: path.join(__dirname, '../../loxberry/config/system')
   };
 };
 

@@ -5,6 +5,8 @@
   "main": "index.js",
   "repository": "github:LoxYourLife/loxberry-express.git",
   "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
     "dev": "vite",
     "build": "vite build && rm -rf webfrontend/htmlauth/assets && cp -r build/assets webfrontend/htmlauth/assets && cp build/build.html templates/index.html",
     "serve": "vite preview",
@@ -24,6 +26,8 @@
     "@vitejs/plugin-vue": "2.3.1",
     "axios": "0.26.1",
     "eslint": "7.32.0",
+    "jest": "^27.5.1",
+    "jest-mock": "^27.5.1",
     "lodash": "4.17.21",
     "prettier": "2.6.1",
     "quasar": "2.6.5",

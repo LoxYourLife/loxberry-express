@@ -9,7 +9,7 @@ const getLayout = require('./lib/loxberry/getLayout');
 const { onUpgrade } = require('./lib/webSocket');
 const { getLanguage } = require('./lib/loxberry/jsonRpc');
 const directories = require('./lib/directories');
-
+const loxberry = require('./lib/loxberry')('express');
 const configFile = path.resolve(directories.config, 'express.json');
 const config = require(configFile);
 
@@ -45,7 +45,7 @@ const createServer = async () => {
   await getLayout(logger);
   let language = 'en';
   try {
-    language = await getLanguage();
+    language = await loxberry.system.getLanguage();
   } catch {
     logger.debug('Unable to fetch Loxberry system language. Falling back to EN');
   }

@@ -22,6 +22,5 @@ const request = async (method, params, id) => {
 module.exports = {
   request: client.request,
   getHeader: () => request('LBWeb::get_lbheader', ['{{title}}', '{{LB_helpLink}}', '{{LB_help}}'], undefined),
-  getFooter: () => request('LBWeb::get_lbfooter', [], undefined),
-  getLanguage: () => request('LBWeb::lblanguage', [], undefined)
+  getFooter: () => request('LBWeb::get_lbfooter', [], undefined)
 };

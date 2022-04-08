@@ -2,11 +2,12 @@
 node_modules
 loxberry
 !bin/lib/loxberry
+!tests/bin/lib/loxberry
 bin/.pm2
 !logs/.gitkeep
 **/logs/*
 build
-plugins
+
 .DS_Store
 .vscode
 

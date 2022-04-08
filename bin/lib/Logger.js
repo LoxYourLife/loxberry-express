@@ -33,11 +33,11 @@ class Logger {
     if (this.loglevel.error) {
       stdErr(format(this.name, ERROR, message));
 
-      if (error && error.stack) {
-        const errorInfo = `    ${error.message}\n    ${error.name}\n    ${error.code}\n    ${error.signal}\n    ${
-          error.stack || error.toString()
-        }`;
-        return stdErr(errorInfo);
+      if (error) {
+        if (error.stack) {
+          return stdErr(`    ${error.stack}\n`);
+        }
+        return stdErr(`    ${error.name}: ${error.message}\n`);
       }
     }
   }
