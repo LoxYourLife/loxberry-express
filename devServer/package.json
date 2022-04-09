@@ -1,11 +1,11 @@
 {
   "name": "loxberry-express-dev-server",
   "version": "0.1.0-beta.0",
-  "description": "",
+  "description": "A simple local development sserver for plugin development",
   "main": "index.js",
   "repository": "github:LoxYourLife/loxberry-express.git",
   "type": "commonjs",
-  "author": "Ronald Marske",
+  "author": "Lox Your Life",
   "license": "ISC",
   "bin": {
     "loxberryExpressDevServer": "index.js"
@@ -18,7 +18,6 @@
     "ip": "1.1.5",
     "lodash": "4.17.21",
     "minimist": ">=1.2.6",
-    "nodemon": "2.0.15",
     "read-ini-file": "3.0.1",
     "ws": "8.5.0"
   }
