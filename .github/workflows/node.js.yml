@@ -40,7 +40,10 @@ jobs:
         with:
           node-version: 12.x
           registry-url: https://registry.npmjs.org/
-      - name: install and publish dev server
+      - name: install dependencies for dev server
+        run: npm ci
+        working_directory: ./devServer
+      - name: publish dev server
         run: npm ci
         run: npm publish
         working_directory: ./devServer
