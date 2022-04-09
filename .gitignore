@@ -3,6 +3,7 @@ node_modules
 loxberry
 !bin/lib/loxberry
 !tests/bin/lib/loxberry
+!devServer/lib/loxberry
 bin/.pm2
 !logs/.gitkeep
 **/logs/*
