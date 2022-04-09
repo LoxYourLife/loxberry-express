@@ -44,7 +44,6 @@ jobs:
         run: npm ci
         working-directory: ./devServer
       - name: publish dev server
-        run: npm ci
         run: npm publish
         working-directory: ./devServer
         env:
