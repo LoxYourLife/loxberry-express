@@ -2,7 +2,6 @@ const express = require('express');
 const fs = require('fs').promises;
 const fsConst = require('fs').constants;
 const path = require('path');
-const directories = require('../lib/directories');
 const _ = require('lodash');
 const { addWsToRouter } = require('../lib/webSocket');
 const i18next = require('i18next');

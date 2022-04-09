@@ -7,7 +7,6 @@ const fs = require('fs');
 const { engine } = require('express-handlebars');
 const getLayout = require('./lib/loxberry/getLayout');
 const { onUpgrade } = require('./lib/webSocket');
-const { getLanguage } = require('./lib/loxberry/jsonRpc');
 const directories = require('./lib/directories');
 const loxberry = require('./lib/loxberry')('express');
 const configFile = path.resolve(directories.config, 'express.json');

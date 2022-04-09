@@ -1,0 +1,54 @@
+{
+  "Base": {
+    "Clouddnsuri": "dns.loxonecloud.com",
+    "Country": "de",
+    "Lang": "de",
+    "Sendstatistic": "on",
+    "Startsetup": "1",
+    "Systemloglevel": "6",
+    "Version": "2.2.1.2"
+  },
+  "Healthcheck": null,
+  "Miniserver": {
+    "1": {
+      "Admin": "<username>",
+      "Admin_raw": "<username>",
+      "Cloudurl": "",
+      "Cloudurlftpport": "",
+      "Credentials": "<username>:<password>",
+      "Credentials_raw": "<username>:<password>",
+      "Encryptresponse": "",
+      "Fulluri": "https://<username>:<password>@[<ip address>]:443",
+      "Fulluri_raw": "https://<username>:<password>@[<ip address>]:443",
+      "Ipaddress": "<ip address>",
+      "Ipv6format": "1",
+      "Name": "",
+      "Note": "",
+      "Pass": "<password>",
+      "Pass_raw": "<password>",
+      "Port": "80",
+      "Porthttps": "443",
+      "Preferhttps": "1",
+      "Securegateway": "",
+      "Transport": "https",
+      "Useclouddns": "0"
+    }
+  },
+  "Mqtt": {
+    "Brokerhost": "localhost",
+    "Brokerpass": "<password>",
+    "Brokerport": "1883",
+    "Brokerpsk": "<PSK>",
+    "Brokeruser": "loxberry",
+    "Udpinport": "11884",
+    "Uselocalbroker": 1,
+    "Websocketport": "9001"
+  },
+  "Network": {
+    "Friendlyname": ""
+  },
+  "Webserver": {
+    "Port": "80",
+    "Porthttps": 443
+  }
+}
