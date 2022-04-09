@@ -42,11 +42,11 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: install dependencies for dev server
         run: npm ci
-        working_directory: ./devServer
+        working-directory: ./devServer
       - name: publish dev server
         run: npm ci
         run: npm publish
-        working_directory: ./devServer
+        working-directory: ./devServer
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
