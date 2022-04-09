@@ -40,8 +40,10 @@ jobs:
         with:
           node-version: 12.x
           registry-url: https://registry.npmjs.org/
-      - run: npm --prefix devServer ci
-      - run: npm --prefix devServer publish
+      - name: install and publish dev server
+        run: npm ci
+        run: npm publish
+        working_directory: ./devServer
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
