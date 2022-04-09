@@ -30,3 +30,18 @@ jobs:
     - run: npm --prefix bin ci
     - run: npm run build --if-present
     - run: npm test
+  
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 12.x
+          registry-url: https://registry.npmjs.org/
+      - run: npm --prefix devServer ci
+      - run: npm --prefix devServer publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
