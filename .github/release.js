@@ -41,6 +41,7 @@ const updateNpm = (prefix) => {
 
 const commit = () => {
   if (!isPrerelease) execSync('git add CHANGELOG.md');
+  execSync('git add templates webfrontend');
   execSync('git add package.json package-lock.json');
   execSync('git add bin/package.json bin/package-lock.json');
   execSync('git add devServer/package.json devServer/package-lock.json');
