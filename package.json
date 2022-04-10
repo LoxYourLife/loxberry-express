@@ -12,7 +12,13 @@
     "serve": "vite preview",
     "lint": "eslint bin",
     "prettify": "prettier --write bin",
-    "zip": "rm -rf express.zip && zip -r express.zip . -x \".git/*\" -x \"node_modules/*\" -x \"loxberry/*\" -x \"build/*\" -x \"logs/*\" -x \"bin/node_modules/*\" -x \"bin/.pm2/*\""
+    "zip": "rm -rf express.zip && zip -r express.zip . -x \".git/*\" -x \"node_modules/*\" -x \"loxberry/*\" -x \"build/*\" -x \"logs/*\" -x \"bin/node_modules/*\" -x \"bin/.pm2/*\"",
+    "release:major": "changelog -M -a && node .github/release.js major false",
+    "release:minor": "changelog -m -a && node .github/release.js minor false",
+    "release:patch": "changelog -p -a && node .github/release.js patch false",
+    "pre:major": "node .github/release.js major true",
+    "pre:minor": "node .github/release.js minor true",
+    "pre:patch": "node .github/release.js patch true"
   },
   "author": "Ronald Marske",
   "license": "ISC",
@@ -26,15 +32,18 @@
     "@vitejs/plugin-vue": "2.3.1",
     "axios": "0.26.1",
     "eslint": "7.32.0",
+    "generate-changelog": "1.8.0",
     "jest": "^27.5.1",
     "jest-mock": "^27.5.1",
     "lodash": "4.17.21",
     "prettier": "2.6.1",
     "quasar": "2.6.5",
+    "read-ini-file": "3.0.1",
     "sass": "1.49.10",
     "vite": "2.9.1",
     "vue": "3.2.31",
     "vue-router": "4.0.14",
-    "vuex": "4.0.2"
+    "vuex": "4.0.2",
+    "write-ini-file": "3.0.2"
   }
 }
