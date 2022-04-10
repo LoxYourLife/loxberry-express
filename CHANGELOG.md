@@ -1,3 +1,12 @@
+#### 1.0.1 (2022-04-10)
+
+##### Other Changes (type)
+
+* **fix:**
+  *  Change devDependencies to dependencies (2186730c)
+  *  Add missing Changelog file (9ad018ab)
+* **ci:**  Commit Changelog also on prereleases (59a4ce53)
+
 #### 1.0.0 (2022-04-10)
 
 **Features**
