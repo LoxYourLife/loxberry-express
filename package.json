@@ -2,7 +2,6 @@
   "name": "loxberry-express",
   "version": "1.0.1",
   "description": "",
-  "main": "index.js",
   "repository": "github:LoxYourLife/loxberry-express.git",
   "config": {
     "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,scripts,tests,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
@@ -36,7 +35,7 @@
     "pre:minor": "node .github/release.js minor true",
     "pre:patch": "node .github/release.js patch true"
   },
-  "author": "Ronald Marske",
+  "author": "Lox Your Life",
   "license": "ISC",
   "devDependencies": {
     "@quasar/extras": "1.13.5",
