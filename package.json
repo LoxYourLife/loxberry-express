@@ -4,6 +4,22 @@
   "description": "",
   "main": "index.js",
   "repository": "github:LoxYourLife/loxberry-express.git",
+  "config": {
+    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,scripts,tests,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
+    "prettier": "--ignore-path .gitignore --loglevel=warn \"{src,scripts,tests,.github}/**/*.{js,md,yml,json,html}\" \"*.{js,yml,json,html}\" \".*.{js,yml,json,html}\" \"!package-lock.json\"",
+    "release": {
+      "additionalNodeModules": [
+        "bin",
+        "devServer"
+      ],
+      "additionalCommands": [
+        {
+          "command": "npm run build",
+          "gitFiles": "webfrontend templates"
+        }
+      ]
+    }
+  },
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -13,19 +29,15 @@
     "lint": "eslint bin",
     "prettify": "prettier --write bin",
     "zip": "rm -rf express.zip && zip -r express.zip . -x \".git/*\" -x \"node_modules/*\" -x \"loxberry/*\" -x \"build/*\" -x \"logs/*\" -x \"bin/node_modules/*\" -x \"bin/.pm2/*\"",
-    "release:major": "npm run build && changelog -M -a && node .github/release.js major false",
-    "release:minor": "npm run build && changelog -m -a && node .github/release.js minor false",
-    "release:patch": "npm run build && changelog -p -a && node .github/release.js patch false",
-    "pre:major": "npm run build && changelog -M -a && node .github/release.js major true",
-    "pre:minor": "npm run build && changelog -m -a && node .github/release.js minor true",
-    "pre:patch": "npm run build && changelog -p -a && node .github/release.js patch true"
+    "release:major": "node .github/release.js major false",
+    "release:minor": "node .github/release.js minor false",
+    "release:patch": "node .github/release.js patch false",
+    "pre:major": "node .github/release.js major true",
+    "pre:minor": "node .github/release.js minor true",
+    "pre:patch": "node .github/release.js patch true"
   },
   "author": "Ronald Marske",
   "license": "ISC",
-  "config": {
-    "eslint": "--ignore-path .gitignore --cache --format=codeframe --max-warnings=0 \"{src,scripts,tests,.github}/**/*.{js,md,html}\" \"*.{js,md,html}\" \".*.{js,md,html}\"",
-    "prettier": "--ignore-path .gitignore --loglevel=warn \"{src,scripts,tests,.github}/**/*.{js,md,yml,json,html}\" \"*.{js,yml,json,html}\" \".*.{js,yml,json,html}\" \"!package-lock.json\""
-  },
   "devDependencies": {
     "@quasar/extras": "1.13.5",
     "@quasar/vite-plugin": "1.0.8",
@@ -37,6 +49,7 @@
     "jest-mock": "^27.5.1",
     "lodash": "4.17.21",
     "prettier": "2.6.1",
+    "prompts": "2.4.2",
     "quasar": "2.6.5",
     "read-ini-file": "3.0.1",
     "sass": "1.49.10",
