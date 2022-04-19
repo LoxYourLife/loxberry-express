@@ -1,3 +1,11 @@
+#### 1.0.3 (2022-04-19)
+
+##### Other Changes
+
+* **feat:**  add plugin url express path as a library method "expressPath" (3ddea197)
+* **fix:**  Fix issue that template can't be rendered on async handlers (ef02bcda)
+* **ci:**  adding some checks to new release command and use package config (ddbf3be4)
+
 #### 1.0.1 (2022-04-10)
 
 ##### Other Changes (type)
