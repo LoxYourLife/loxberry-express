@@ -55,6 +55,7 @@ const secureRouter = (router) => {
       orignalMethod(route, async (req, res, next) => {
         try {
           await handler(req, res, next);
+          next();
         } catch (e) {
           next(e);
         }
@@ -80,6 +81,8 @@ const secureRouter = (router) => {
 
 module.exports = ({ app, language, config, auth }) => {
   const router = express.Router();
+  const expressLogger = require('../lib/Logger')('Express', config);
+
   router.use('/:name', async (req, res, next) => {
     const pluginName = req.params.name;
     const { system } = loxberry(pluginName);
@@ -88,7 +91,7 @@ module.exports = ({ app, language, config, auth }) => {
     try {
       pluginData = await system.pluginData();
     } catch {
-      logger.error(`No plugin with name "${pluginName}" installed.`);
+      expressLogger.error(`No plugin with name "${pluginName}" installed.`);
       return res.status(404).send('404');
     }
 
@@ -100,7 +103,7 @@ module.exports = ({ app, language, config, auth }) => {
 
     const pluginFile = await getModule(pluginData, auth);
     if (false === pluginFile) {
-      logger.error(`Plugin "${pluginData.title}" does not provide an express${auth ? '.auth' : ''}.js file in "htmlauth" folder.`);
+      expressLogger.error(`Plugin "${pluginData.title}" does not provide an express${auth ? '.auth' : ''}.js file in "htmlauth" folder.`);
       return res.status(404).send('404');
     }
 
@@ -123,10 +126,11 @@ module.exports = ({ app, language, config, auth }) => {
         }
         return translate(context);
       };
-      app.set('views', [...app.get('views'), templatePath]);
+
+      await app.set('views', [...app.get('views'), templatePath]);
       const originalRender = res.render;
 
-      res.render = (view, options, fn) => {
+      res.render = async (view, options, fn) => {
         if (_.has(options, 'helpers')) {
           options.helpers = _.assign({ t: handlbarsTranslate }, _.get(options, 'helpers'));
         } else {
@@ -135,24 +139,24 @@ module.exports = ({ app, language, config, auth }) => {
         if (!options.cache) {
           options.cache = false;
         }
-        originalRender.call(res, view, options, fn);
+        await originalRender.call(res, view, options, fn);
       };
 
+      // Next is always called - due to secureRouter method
       await plugin(req, res, (e) => {
         if (e) {
           logger.error('Something went wrong', e);
           return res.status(500).send('error');
         }
-        next();
+
+        app.set(
+          'views',
+          app.get('views').filter((p) => p !== templatePath)
+        );
       });
     } catch (e) {
-      logger.error('Something went wrong', e);
+      expressLogger.error('Something went wrong', e);
       res.status(500).send('error');
-    } finally {
-      app.set(
-        'views',
-        app.get('views').filter((p) => p !== templatePath)
-      );
     }
   });
 
