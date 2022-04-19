@@ -48,6 +48,11 @@ module.exports = class System {
     return pluginData.loglevel;
   }
 
+  async expressPath(auth = true, givenName) {
+    const pluginData = await this.pluginData(givenName);
+    return `${auth ? '/admin' : ''}/express/plugins/${pluginData.name}`;
+  }
+
   async getMiniserver() {
     const config = await getGeneralConfig();
     const miniserver = _.get(config, 'Miniserver', {});

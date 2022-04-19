@@ -131,6 +131,26 @@ describe('Loxberry System', () => {
         await expect(system.pluginLogLevel('other')).resolves.toEqual('4');
       });
     });
+    describe('expressPath', () => {
+      it('throws error when file can not be read', async () => {
+        fileHandler.readJson.mockRejectedValue(Error('oh oh'));
+        await expect(() => system.expressPath()).rejects.toEqual(Error('oh oh'));
+      });
+
+      it('returns an error when the plugin isnt installed', async () => {
+        await expect(() => system.expressPath(true, 'foo')).rejects.toEqual(Error('Plugin was not found'));
+      });
+
+      it('returns the data from the default plugin', async () => {
+        await expect(system.expressPath()).resolves.toEqual('/admin/express/plugins/test');
+        await expect(system.expressPath(false)).resolves.toEqual('/express/plugins/test');
+      });
+
+      it('returns the data from a plugin thats given', async () => {
+        await expect(system.expressPath(true, 'other')).resolves.toEqual('/admin/express/plugins/other');
+        await expect(system.expressPath(false, 'other')).resolves.toEqual('/express/plugins/other');
+      });
+    });
   });
 
   describe('General functions', () => {
