@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import path from 'path';
+import { resolve } from 'path';
 import { quasar } from '@quasar/vite-plugin';
 
 module.exports = defineConfig(({ command, mode }) => {
@@ -10,12 +10,12 @@ module.exports = defineConfig(({ command, mode }) => {
     root: 'app',
     plugins: [vue(), quasar({ sassVariables: 'app/quasar.extras.sass', autoImportComponentCase: 'combined' })],
     build: {
-      outDir: path.resolve(__dirname, 'build'),
+      outDir: resolve(__dirname, 'build'),
       assetsDir: 'assets',
       emptyOutDir: true,
       rollupOptions: {
         input: {
-          main: path.resolve(__dirname, 'app/build.html')
+          main: resolve(__dirname, 'app/build.html')
         },
         // make sure to externalize deps that shouldn't be bundled
         // into your library

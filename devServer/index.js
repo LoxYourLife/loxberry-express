@@ -149,10 +149,10 @@ const createServer = async () => {
   app.get('*', (req, res, next) => {
     if (req.ws) return next();
     logger.info(`ACCESS 404 ${req.method} ${req.url}`);
-    res.status(404);
+    res.status(404).end();
   });
 
-  const server = app.listen(3300, '0.0.0.0', () => {
+  const server = app.listen(3300, 'localhost', () => {
     logger.info(`LoxBerry Express Server listening at http://localhost:3300`);
     logger.info(`    Authenticated: /admin/express/plugins/${plugin.name}/`);
     logger.info(`    No Auth:       /express/plugins/${plugin.name}/`);

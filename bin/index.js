@@ -67,7 +67,7 @@ const createServer = async () => {
 
   app.get('*', notFound);
 
-  const server = app.listen(config.expressPort, '0.0.0.0', () => {
+  const server = app.listen(config.expressPort, 'localhost', () => {
     logger.info(`LoxBerry Express Server listening at http://localhost:${config.expressPort}}`);
   });
 

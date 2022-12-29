@@ -33,6 +33,7 @@ For a better coding experience you can install nodemon and restart the server on
 
 The Dev Server will be in sync with the [Loxberry Express Server] plugin.
 
-[Develop Loxberry Plugin With NodeJs]: https://loxwiki.atlassian.net/wiki/spaces/LOXBERRY/pages/1673625653/Node+JS+Plugin+Entwicklung´
-[Loxberry Express Server]: https://loxwiki.atlassian.net/wiki/spaces/LOXBERRY/pages/1673527328/Express+Server
+[Develop Loxberry Plugin With NodeJs]: https://wiki.loxberry.de/entwickler/node_js_plugin_entwicklung
+[Loxberry Express Server]: https://wiki.loxberry.de/plugins/express_server/start
+
 

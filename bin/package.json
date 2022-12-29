@@ -1,6 +1,6 @@
 {
   "name": "loxberry-express-bin",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "directories": {
@@ -18,16 +18,20 @@
     "delete": "PM2_HOME=$(pwd)/.pm2 pm2 kill"
   },
   "dependencies": {
-    "express": "4.17.3",
-    "express-fileupload": "1.3.1",
-    "express-handlebars": "",
-    "i18next": "21.6.14",
-    "ip": "1.1.5",
-    "jayson": "3.6.6",
-    "nodemon": "2.0.15",
-    "pm2": "5.2.0",
-    "ws": "8.5.0"
+    "express": "4.18.2",
+    "express-fileupload": "1.4.0",
+    "express-handlebars": "6.0.6",
+    "i18next": "22.4.6",
+    "ip": "1.1.8",
+    "jayson": "4.0.0",
+    "nodemon": "2.0.20",
+    "pm2": "5.2.2",
+    "ws": "8.11.0"
   },
   "author": "Ronald Marske",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+    "npm": ">=8.0.0 <9.0.0",
+    "node": "18.12.1"
+  }
 }

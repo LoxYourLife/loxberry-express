@@ -29,7 +29,7 @@ my $version = LoxBerry::System::pluginversion("express");
 
 if ($version && $version ge $minRequiredVersion && $version lt $unvalidVersion) {
 my $q = CGI->new;
-print $q->header(-status => 307, -location => '/admin/express/plugins/unifi_presence');
+print $q->header(-status => 307, -location => '/admin/express/plugins/<Plugin name>');
 exit(0);
 }
 
@@ -288,4 +288,4 @@ In the interface of the express server you can set a loglevel which is given for
 [express.static]: https://expressjs.com/de/starter/static-files.html
 [postinstall]: https://www.loxwiki.eu/pages/viewpage.action?pageId=23462653#Pluginf%C3%BCrdenLoxberryentwickeln(abVersion1.x)-Rootverzeichnis-Datei:postinstall.shYellowOptional
 [preroot]: https://www.loxwiki.eu/pages/viewpage.action?pageId=23462653#Pluginf%C3%BCrdenLoxberryentwickeln(abVersion1.x)-Rootverzeichnis-Datei:preroot.shYellowOptional
-[Loxwiki]: https://loxwiki.atlassian.net/wiki/spaces/LOXBERRY/pages/1673527328/Express+Server
+[Loxwiki]: https://wiki.loxberry.de/plugins/express_server/start

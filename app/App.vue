@@ -37,6 +37,11 @@
 @import '@quasar/extras/material-icons/material-icons.css'
 @import 'quasar/src/css/index.sass'
 
+/* Loxberry 3 Layout fix */
+#main1 .ui-header .container > .column
+  flex-direction: inherit
+  display: block
+
 #app .ui-btn
   margin-bottom: 0
   width: auto
