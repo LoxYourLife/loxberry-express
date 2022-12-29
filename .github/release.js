@@ -1,7 +1,7 @@
 /**
  * Release Script - the main purpose is to automate the release process that you don't forget to change a file.
  * This tool requires a package.json in the root folder including optional config and some required modules.
- * 
+ *
  * The required devDependencies are:
  * {
  *    "prompts": "2.4.2",
@@ -9,22 +9,22 @@
  *    "write-ini-file": "3.0.2",
  *    "generate-changelog": "1.8.0"
  * }
- * 
+ *
  * When you don't have a plugin.json, create one by calling `npm init`.
- * The script will first check for a clean git environment and config issues and in case everything is fine it bumps up 
+ * The script will first check for a clean git environment and config issues and in case everything is fine it bumps up
  * a version like major, minor or patch, show you the new version and ask for permission to continue.
  * If agreed, the plugin.cfg and either the release.cfg or prerelease.cfg are changed accordingly.
- * 
+ *
  * After that a git status screen is shown to show the changes and again, the script asks for permission.
  * If granted, the script will commit the changes, create a tag and push everything to the upstream.
  * If denied, all the files will be reset.
- * 
+ *
  * You're done.
- * 
+ *
  * You have also the possibilities for hooking into the script.
  * 1. additional node modules and package.json files, maybe in bin
  * 2. some custom commands you need to run to make a build.
- * 
+ *
  * Those parameters will be placed in the root package.json file.
  * {
  *    "config": {
@@ -38,14 +38,14 @@
  *        }
  *      ]
  *    }
- * } 
+ * }
  *
  */
 
 const prompts = require('prompts');
 
-const readIniFile = require('read-ini-file');
-const writeIniFile = require('write-ini-file');
+const { readIniFile } = require('read-ini-file');
+const { writeIniFile } = require('write-ini-file');
 const path = require('path');
 const { execSync } = require('child_process');
 
