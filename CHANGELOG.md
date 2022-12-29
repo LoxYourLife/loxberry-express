@@ -1,3 +1,11 @@
+## 2.0.0 (2022-12-29)
+
+* **feat:** 
+  * updated depencdencies
+  * upgraded to node 18.12.1
+* **fix**
+  * loxberry 3.0 issue with handlebars templates:
+
 #### 1.0.3 (2022-04-19)
 
 ##### Other Changes
