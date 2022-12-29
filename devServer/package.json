@@ -1,6 +1,6 @@
 {
   "name": "loxberry-express-dev-server",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A simple local development sserver for plugin development",
   "main": "index.js",
   "repository": "github:LoxYourLife/loxberry-express.git",

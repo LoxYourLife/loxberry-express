@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
-const loadIniFile = require('read-ini-file');
+const { readIniFile } = require('read-ini-file');
 
 const loxberryConfig = async (devPath) => {
   const sourceConfig = path.resolve(__dirname, 'loxberry.config.json');
@@ -35,7 +35,7 @@ const plugindatabase = async (rootPath, devPath) => {
     throw new Error('Cannot find plugin.cfg file');
   }
 
-  const plugin = await loadIniFile(pluginFile);
+  const plugin = await readIniFile(pluginFile);
 
   const pluginData = {
     author_email: _.get(plugin, 'AUTHOR.EMAIL'),

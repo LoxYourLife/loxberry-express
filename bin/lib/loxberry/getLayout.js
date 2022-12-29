@@ -19,7 +19,14 @@ module.exports = async (logger) => {
     try {
       const header = await getHeader();
       const footer = await getFooter();
-      template = `${header}\t\t\t\t\t{{{body}}}\n\t\t\t\t\t${footer}`;
+
+      const fixedHeader = header
+        .replaceAll('{{', '\\{{')
+        .replaceAll('\\{{title', '{{title')
+        .replaceAll('\\{{LB_helpLink', '{{LB_helpLink')
+        .replaceAll('\\{{LB_help', '{{LB_help');
+
+      template = `${fixedHeader}\t\t\t\t\t{{{body}}}\n\t\t\t\t\t${footer.replaceAll('{{', '\\{{')}`;
     } catch (error) {
       logger.error('Fetching Layout failed', error);
     }
