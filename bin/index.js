@@ -68,7 +68,7 @@ const createServer = async () => {
   app.get('*', notFound);
 
   const server = app.listen(config.expressPort, 'localhost', () => {
-    logger.info(`LoxBerry Express Server listening at http://localhost:${config.expressPort}}`);
+    logger.info(`LoxBerry Express Server listening at http://localhost:${config.expressPort}`);
   });
 
   server.on('upgrade', onUpgrade(app));

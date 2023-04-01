@@ -20,7 +20,7 @@ const getLanguage = async (defaultLanguage, templatePath, logger) => {
   try {
     const files = await fs.readdir(templatePath);
     languages = _.reduce(
-      files,
+      _.filter(files, (file) => file.endsWith('.js')),
       (acc, file) => {
         const content = require(path.resolve(templatePath, file));
         const language = file.replace('.js', '');
