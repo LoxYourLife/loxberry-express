@@ -1,3 +1,11 @@
+#### 2.0.2 (2023-04-01)
+
+##### Other Changes
+
+* **fix:**
+  *  restore delete package.json (983901b4)
+  *  fix issue with loading ini files as language (618c1c93)
+
 ## 2.0.0 (2022-12-29)
 
 * **feat:** 
